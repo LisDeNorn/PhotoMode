@@ -1,0 +1,153 @@
+{
+  "lessons": [
+    {
+      "id": "fundamentals_light",
+      "title": "Свет",
+      "category": "FUNDAMENTALS",
+      "shortDescription": "Как найти хороший свет за 30 секунд",
+      "thumbnailImage": "fundamentals_light_thumb.webp",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Жёсткий vs Мягкий свет",
+          "description": "Жесткий свет делает резкие тени под глазами и носом, лицо выглядит уставшим.\n\nМягкий свет делает тени лёгкими, кожа выглядит лучше. Для людей почти всегда выбирай мягкий свет.",
+          "goodExampleImage": "soft_light_good.jpg",
+          "badExampleImage": "hard_light_bad.jpg",
+          "goodExampleLabel": "✅ Мягкий свет",
+          "badExampleLabel": "❌ Жесткий свет"
+        },
+        {
+          "type": "THEORY",
+          "title": "Откуда должен светить свет",
+          "description": "Лучший свет — перед лицом и немного сбоку. Свет сверху или за спиной делает лицо тёмным и плоским.",
+          "goodExampleImage": "light_position_good.jpg",
+          "badExampleImage": "light_position_bad.jpg",
+          "goodExampleLabel": "✅ Свет спереди",
+          "badExampleLabel": "❌ Свет сверху"
+        },
+        {
+          "type": "INSTRUCTION",
+          "title": "Где искать хороший свет",
+          "text": "Ищи место, где **лицо будет светлее фона**.\n\nОбычно это:\n• рядом с окном или витриной\n• в тени от здания, лицом к открытому небу\n\nИзбегай мест, где свет сверху или за спиной — под лампами и под прямым солнцем.",
+          "exampleImage": "light_where_to_shoot.jpg",
+          "exampleImageLabel": "Лицо к свету — так и ищи место"
+        }
+      ]
+    },
+    {
+      "id": "fundamentals_horizon",
+      "title": "Горизонт",
+      "category": "FUNDAMENTALS",
+      "shortDescription": "Как выровнять горизонт",
+      "thumbnailImage": "horizon_thumb.jpg",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Почему горизонт должен быть ровным",
+          "description": "Кривой горизонт портит любую фотографию. Ровный горизонт делает фото профессиональным.",
+          "goodExampleImage": "horizon_good.jpg",
+          "badExampleImage": "horizon_bad.jpg",
+          "goodExampleLabel": "✅ Ровный горизонт",
+          "badExampleLabel": "❌ Кривой горизонт"
+        },
+        {
+          "type": "INSTRUCTION",
+          "text": "Включи сетку в настройках камеры. Выровняй горизонт по горизонтальной линии сетки.",
+          "exampleImage": "horizon_instruction.jpg"
+        }
+      ]
+    },
+    {
+      "id": "fundamentals_angle",
+      "title": "Ракурс",
+      "category": "FUNDAMENTALS",
+      "shortDescription": "Как выбрать правильный угол съемки",
+      "thumbnailImage": "angle_thumb.jpg",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Зачем нужен правильный ракурс",
+          "description": "Ракурс может сделать человека выше или ниже, красивее или наоборот. Выбирай правильный угол.",
+          "goodExampleImage": "angle_good.jpg",
+          "badExampleImage": "angle_bad.jpg",
+          "goodExampleLabel": "✅ Правильный ракурс",
+          "badExampleLabel": "❌ Неправильный ракурс"
+        },
+        {
+          "type": "INSTRUCTION",
+          "text": "При фотографировании людей держи телефон на уровне глаз или чуть выше. Никогда не фотографируй снизу вверх — это делает людей некрасивыми.",
+          "exampleImage": "angle_instruction.jpg"
+        }
+      ]
+    },
+    {
+      "id": "fundamentals_frame",
+      "title": "Кадр",
+      "category": "FUNDAMENTALS",
+      "shortDescription": "Как правильно кадрировать фото",
+      "thumbnailImage": "frame_thumb.jpg",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Что такое правильный кадр",
+          "description": "Правильный кадр — это когда в фото есть все важное и нет лишнего. Объект должен быть в центре внимания.",
+          "goodExampleImage": "frame_good.jpg",
+          "badExampleImage": "frame_bad.jpg",
+          "goodExampleLabel": "✅ Правильный кадр",
+          "badExampleLabel": "❌ Неправильный кадр"
+        },
+        {
+          "type": "INSTRUCTION",
+          "text": "Подойди ближе к объекту или используй зум. Убери из кадра все лишнее — мусор, посторонних людей, ненужные предметы.",
+          "exampleImage": "frame_instruction.jpg"
+        }
+      ]
+    },
+    {
+      "id": "scenarios_cafe_portrait",
+      "title": "Портрет в кафе",
+      "category": "SCENARIOS",
+      "shortDescription": "Как сфотографировать девушку в кафе",
+      "thumbnailImage": "cafe_portrait_thumb.jpg",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Почему кафе — хорошее место для фото",
+          "description": "В кафе обычно хорошее освещение и приятный фон. Это идеальное место для портрета.",
+          "goodExampleImage": "cafe_good.jpg",
+          "badExampleImage": "cafe_bad.jpg",
+          "goodExampleLabel": "✅ Хорошее фото",
+          "badExampleLabel": "❌ Плохое фото"
+        },
+        {
+          "type": "INSTRUCTION",
+          "text": "Посади человека у окна, чтобы свет падал на лицо. Используй фон кафе — кофе, десерты. Держи телефон на уровне глаз.",
+          "exampleImage": "cafe_instruction.jpg"
+        }
+      ]
+    },
+    {
+      "id": "scenarios_group_photo",
+      "title": "Групповое фото",
+      "category": "SCENARIOS",
+      "shortDescription": "Как сфотографировать несколько человек",
+      "thumbnailImage": "group_photo_thumb.jpg",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Как сделать хорошее групповое фото",
+          "description": "В групповом фото все должны быть видны и в фокусе. Никто не должен быть обрезан.",
+          "goodExampleImage": "group_good.jpg",
+          "badExampleImage": "group_bad.jpg",
+          "goodExampleLabel": "✅ Хорошее групповое фото",
+          "badExampleLabel": "❌ Плохое групповое фото"
+        },
+        {
+          "type": "INSTRUCTION",
+          "text": "Отойди подальше, чтобы все поместились. Попроси всех встать в один ряд или в два ряда (высокие сзади). Убедись, что все лица видны.",
+          "exampleImage": "group_instruction.jpg"
+        }
+      ]
+    }
+  ]
+}
