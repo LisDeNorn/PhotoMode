@@ -14,15 +14,15 @@ sealed class LessonStep {
 
     // 2. ШАГ ИНСТРУКЦИИ (куда ставить объект)
     data class Instruction(
+        val title: String,
         val text: String,
         val exampleImage: String,
-        val exampleImageLabel: String? = null, // Подпись при тапе (если null — картинка без подсказки)
-//        val highlightPoints: List<PointF> // Координаты для разметки
+        val exampleImageLabel: String? = null
     ) : LessonStep()
 
     // 3. ШАГ ПРАКТИКИ (ссылка на тренажёр)
     data class Practice(
-        val task: String,
-//        val trainerType: TrainerType // Enum: CROP, QUIZ, CAMERA
+        val title: String,
+        val task: String
     ) : LessonStep()
 }

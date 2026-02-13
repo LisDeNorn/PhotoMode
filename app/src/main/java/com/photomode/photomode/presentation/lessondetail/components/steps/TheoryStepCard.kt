@@ -6,8 +6,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,10 +28,6 @@ import com.photomode.photomode.presentation.lessondetail.components.InteractiveI
 import com.photomode.photomode.presentation.utils.ImageUtils
 import com.photomode.photomode.ui.theme.PhotoModeTheme
 
-/**
- * Презентационная карточка шага теории: только отрисовка.
- * Состояние и обработчики передаются снаружи (из [TheoryStepContent]).
- */
 @Composable
 fun TheoryStepCard(
     step: LessonStep.Theory,
@@ -38,54 +37,61 @@ fun TheoryStepCard(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier
+            .fillMaxSize(),
     ) {
         Text(
             text = step.title,
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 24.dp)
         )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onImagesTap
-                ),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            InteractiveImage(
-                imageUri = ImageUtils.getAssetImageUri(step.badExampleImage),
-                contentDescription = step.badExampleLabel,
-                label = step.badExampleLabel,
-                isExpanded = isImagesExpanded,
-                onTap = onImagesTap,
-                borderColor = MaterialTheme.colorScheme.error,
-                modifier = Modifier.weight(1f)
-            )
-            InteractiveImage(
-                imageUri = ImageUtils.getAssetImageUri(step.goodExampleImage),
-                contentDescription = step.goodExampleLabel,
-                label = step.goodExampleLabel,
-                isExpanded = isImagesExpanded,
-                onTap = onImagesTap,
-                borderColor = Color(0xFF4CAF50),
-                modifier = Modifier.weight(1f)
-            )
-        }
 
         Column(
             modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onDismissRequest
-                )
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    if (isImagesExpanded) {
+                        onDismissRequest()
+                    }
+                },
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = onImagesTap
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                InteractiveImage(
+                    imageUri = ImageUtils.getAssetImageUri(step.badExampleImage),
+                    contentDescription = step.badExampleLabel,
+                    label = step.badExampleLabel,
+                    isExpanded = isImagesExpanded,
+                    onTap = onImagesTap,
+                    borderColor = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.weight(1f)
+                )
+                InteractiveImage(
+                    imageUri = ImageUtils.getAssetImageUri(step.goodExampleImage),
+                    contentDescription = step.goodExampleLabel,
+                    label = step.goodExampleLabel,
+                    isExpanded = isImagesExpanded,
+                    onTap = onImagesTap,
+                    borderColor = Color(0xFF4CAF50),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
             val paragraphs = step.description
                 .split("\n\n")
                 .map { it.trim() }
@@ -94,8 +100,7 @@ fun TheoryStepCard(
             paragraphs.forEach { paragraph ->
                 Text(
                     text = paragraph,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }

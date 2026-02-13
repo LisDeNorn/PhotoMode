@@ -63,6 +63,7 @@ class LocalLessonStorage {
             }
             "INSTRUCTION" -> {
                 LessonStep.Instruction(
+                    title = json.getString("title"),
                     text = json.getString("text"),
                     exampleImage = json.getString("exampleImage"),
                     exampleImageLabel = json.optString("exampleImageLabel").takeIf { it.isNotEmpty() }
@@ -70,6 +71,7 @@ class LocalLessonStorage {
             }
             "PRACTICE" -> {
                 LessonStep.Practice(
+                    title = json.getString("title"),
                     task = json.getString("task")
                 )
             }

@@ -14,41 +14,39 @@ fun PracticeStepCard(
     step: LessonStep.Practice,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
+        Text(
+            text = "🎯 ${step.title?.takeIf { it.isNotBlank() } ?: "Практика"}",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "🎯 Практика",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = step.task,
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            // TODO: Кнопка для запуска тренажера
-            Button(
-                onClick = { /* TODO: Запустить тренажер */ },
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("Начать практику")
+                Text(
+                    text = step.task,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Button(
+                    onClick = { /* TODO: Запустить тренажер */ },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Начать практику")
+                }
             }
         }
     }
 }
-
-
-
-

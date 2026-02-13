@@ -14,39 +14,50 @@ import com.photomode.photomode.presentation.lessondetail.components.steps.Practi
 import com.photomode.photomode.presentation.lessondetail.components.steps.TheoryStepCard
 import kotlinx.coroutines.delay
 
-private const val THEORY_IMAGES_AUTO_HIDE_DELAY_MS = 4000L
+private const val IMAGES_AUTO_HIDE_DELAY_MS = 4000L
 
 @Composable
 fun LessonStepContent(
     step: LessonStep,
     modifier: Modifier = Modifier
 ) {
+    var isExpanded by remember(step) { mutableStateOf(false) }
+
+    LaunchedEffect(isExpanded) {
+        if (isExpanded) {
+            delay(IMAGES_AUTO_HIDE_DELAY_MS)
+            isExpanded = false
+        }
+    }
+
     when (step) {
+
         is LessonStep.Theory -> {
-            var isExpanded by remember { mutableStateOf(false) }
-
-            LaunchedEffect(step) {
-                isExpanded = false
-            }
-
-            LaunchedEffect(isExpanded) {
-                if (isExpanded) {
-                    delay(THEORY_IMAGES_AUTO_HIDE_DELAY_MS)
-                    isExpanded = false
-                }
-            }
-
             TheoryStepCard(
                 step = step,
                 isImagesExpanded = isExpanded,
-                onImagesTap = {
-                    isExpanded = !isExpanded
-                },
+                onImagesTap = { isExpanded = !isExpanded },
                 onDismissRequest = { isExpanded = false },
                 modifier = modifier
             )
         }
-        is LessonStep.Instruction -> InstructionStepCard(step = step, modifier = modifier)
-        is LessonStep.Practice -> PracticeStepCard(step = step, modifier = modifier)
+
+        is LessonStep.Instruction -> {
+            InstructionStepCard(
+                step = step,
+                isImageExpanded = isExpanded,
+                onImageTap = { isExpanded = !isExpanded },
+                onDismissRequest = { isExpanded = false },
+                modifier = modifier
+            )
+        }
+
+        is LessonStep.Practice -> {
+            PracticeStepCard(
+                step = step,
+                modifier = modifier
+            )
+        }
     }
 }
+

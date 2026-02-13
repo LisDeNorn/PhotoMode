@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">PhotoMode</string>
+    <string name="lesson_completed_title">Ееее, супер!</string>
+    <string name="lesson_completed_message">Вы успешно завершили урок и стали на шаг ближе к крутым фотографиям!</string>
+    <string name="lesson_completed_button">Продолжаем!</string>
 </resources>

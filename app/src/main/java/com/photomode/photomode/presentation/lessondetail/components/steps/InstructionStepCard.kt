@@ -1,206 +1,127 @@
 package com.photomode.photomode.presentation.lessondetail.components.steps
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.runtime.remember
 import com.photomode.domain.model.LessonStep
 import com.photomode.photomode.presentation.lessondetail.components.InteractiveImage
 import com.photomode.photomode.presentation.utils.ImageUtils
-import kotlinx.coroutines.delay
 
 @Composable
 fun InstructionStepCard(
     step: LessonStep.Instruction,
+    isImageExpanded: Boolean,
+    onImageTap: () -> Unit,
+    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var dismissImageKey by remember { mutableStateOf(0) }
-    var isImageExpanded by remember { mutableStateOf(false) }
-    var imageTimerKey by remember { mutableStateOf(0) }
-    val hasImageLabel = step.exampleImageLabel != null
-
-    LaunchedEffect(dismissImageKey) {
-        isImageExpanded = false
-    }
-    LaunchedEffect(isImageExpanded, imageTimerKey) {
-        if (isImageExpanded) {
-            delay(4000)
-            isImageExpanded = false
-        }
-    }
-
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier.fillMaxSize()
     ) {
-        // Инструкция в карточке; тап скрывает подсказку у картинки (если есть)
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .then(
-                    if (hasImageLabel) {
-                        Modifier.clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) { dismissImageKey++ }
-                    } else Modifier
-                ),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Заголовок "Инструкция" с иконкой
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = "Инструкция",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                
-                // Пронумерованный список инструкций
-                parseAndDisplayInstructions(step.text)
-            }
-        }
 
-        // Пример изображения (если есть)
-        if (step.exampleImage.isNotEmpty()) {
-            val label = step.exampleImageLabel
-
-            if (label != null) {
-                InteractiveImage(
-                    imageUri = ImageUtils.getAssetImageUri(step.exampleImage),
-                    contentDescription = label,
-                    label = label,
-                    isExpanded = isImageExpanded,
-                    onTap = {
-                        isImageExpanded = !isImageExpanded
-                        if (isImageExpanded) imageTimerKey++
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    height = 300.dp,
-                    shape = RoundedCornerShape(12.dp)
-                )
-            } else {
-                // Без подсказки: только отрисовка
-                InteractiveImage(
-                    imageUri = ImageUtils.getAssetImageUri(step.exampleImage),
-                    contentDescription = "Пример",
-                    label = null,
-                    isExpanded = false,
-                    onTap = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    height = 300.dp,
-                    shape = RoundedCornerShape(12.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun parseAndDisplayInstructions(text: String) {
-    // Парсим текст и извлекаем пронумерованные пункты
-    val lines = text.split("\n")
-    var instructionNumber = 1
-    val instructions = mutableListOf<Pair<Int, String>>()
-    val descriptions = mutableListOf<String>()
-    
-    lines.forEach { line ->
-        val trimmedLine = line.trim()
-        if (trimmedLine.isNotEmpty()) {
-            when {
-                trimmedLine.matches(Regex("^\\d+\\..*")) -> {
-                    // Пронумерованный пункт (1. текст)
-                    val instructionText = trimmedLine.substringAfter(". ").trim()
-                    if (instructionText.isNotEmpty()) {
-                        instructions.add(instructionNumber++ to instructionText)
-                    }
-                }
-                trimmedLine.startsWith("•") || trimmedLine.startsWith("-") -> {
-                    // Маркированный пункт - преобразуем в пронумерованный
-                    val instructionText = trimmedLine.substring(1).trim()
-                    if (instructionText.isNotEmpty()) {
-                        instructions.add(instructionNumber++ to instructionText)
-                    }
-                }
-                else -> {
-                    // Обычный текст (описание) - показываем перед инструкциями
-                    descriptions.add(trimmedLine)
-                }
-            }
-        }
-    }
-    
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        // Сначала показываем описания
-        descriptions.forEach { description ->
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-        
-        // Затем показываем пронумерованные инструкции
-        instructions.forEach { (number, text) ->
-            InstructionItem(
-                number = number,
-                text = text
-            )
-        }
-    }
-}
-
-@Composable
-private fun InstructionItem(
-    number: Int,
-    text: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top
-    ) {
         Text(
-            text = "$number.",
-            style = MaterialTheme.typography.bodyLarge,
+            text = step.title,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            modifier = Modifier.padding(bottom = 24.dp)
         )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
-        )
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    if (isImageExpanded) {
+                        onDismissRequest()
+                    }
+                },
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+
+            if (step.exampleImage.isNotEmpty()) {
+                InteractiveImage(
+                    imageUri = ImageUtils.getAssetImageUri(step.exampleImage),
+                    contentDescription = step.title,
+                    label = step.exampleImageLabel,
+                    isExpanded = isImageExpanded,
+                    onTap = onImageTap,
+                    borderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            InstructionContent(step.text)
+        }
     }
+
 }
 
+private sealed class InstructionBlock {
+    data class Paragraph(val text: String) : InstructionBlock()
+    data class Bullet(val text: String) : InstructionBlock()
+}
+
+@Composable
+private fun InstructionContent(text: String) {
+    val blocks = remember(text) {
+        text.split("\n").mapNotNull { line ->
+            val t = line.trim()
+            if (t.isEmpty()) return@mapNotNull null
+            when {
+                t.matches(Regex("^\\d+\\..*")) -> InstructionBlock.Bullet(
+                    t.substringAfter(". ").trim()
+                )
+
+                t.startsWith("•") || t.startsWith("-") -> InstructionBlock.Bullet(t.drop(1).trim())
+                else -> InstructionBlock.Paragraph(t)
+            }
+        }
+    }
+    val style = MaterialTheme.typography.bodyLarge
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        blocks.forEach { block ->
+            when (block) {
+                is InstructionBlock.Paragraph -> Text(text = block.text, style = style)
+                is InstructionBlock.Bullet -> Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .size(6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape
+                            )
+                    )
+                    Text(text = block.text, style = style, modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}

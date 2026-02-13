@@ -1,26 +1,35 @@
 package com.photomode.photomode.presentation.lessondetail
 
 import android.content.Context
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.photmode.data.storage.LocalLessonStorage
 import com.photomode.domain.model.Lesson
-import com.photomode.domain.model.LessonCategory
-import com.photomode.domain.model.LessonStep
-import com.photomode.photomode.presentation.components.*
-import com.photomode.photomode.presentation.lessondetail.components.*
+import com.photomode.photomode.R
+import com.photomode.photomode.presentation.components.ErrorView
+import com.photomode.photomode.presentation.components.LoadingView
+import com.photomode.photomode.presentation.lessondetail.components.LessonNavigationButtons
+import com.photomode.photomode.presentation.lessondetail.components.LessonProgress
+import com.photomode.photomode.presentation.lessondetail.components.LessonStepContent
+import com.photomode.photomode.presentation.lessondetail.components.LessonTopBar
 import com.photomode.photomode.ui.theme.PhotoModeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +41,7 @@ fun LessonDetailScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.primary, // Синий фон
+        containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
             LessonTopBar(
                 title = state.lessonTitle,
@@ -68,36 +77,18 @@ fun LessonDetailScreen(
                                     .padding(top = 12.dp, bottom = 8.dp)
                             )
 
-                            // Прокручиваемый контент
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .verticalScroll(rememberScrollState())
-                                    .padding(horizontal = 24.dp, vertical = 16.dp),
-                                verticalArrangement = Arrangement.spacedBy(24.dp)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp, vertical = 16.dp)
                             ) {
-                                // Шаг
-                                LessonStepContent(step = state.currentStep)
-
-                                // Успешное завершение
-                                if (state.isLessonCompleted) {
-                                    Card(
-                                        colors = CardDefaults.cardColors(
-                                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                                        ),
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Text(
-                                            "✅ Урок пройден!",
-                                            modifier = Modifier.padding(16.dp),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
-                                }
+                                LessonStepContent(
+                                    step = state.currentStep,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
 
-                            // Фиксированные кнопки навигации внизу
                             LessonNavigationButtons(
                                 canGoBack = state.canGoBack,
                                 isLastStep = state.stepNumber == state.stepsCount,
@@ -110,17 +101,17 @@ fun LessonDetailScreen(
                             )
                         }
 
-                        // Диалог завершения
+
                         if (state.showCompletionDialog) {
                             AlertDialog(
-                                onDismissRequest = { /* Не закрываем по клику мимо */ },
-                                title = { Text("Ееее, супер!") },
-                                text = { Text("Вы успешно завершили урок и стали на шаг ближе к крутым фотографиям!") },
+                                onDismissRequest = { },
+                                title = { Text(stringResource(R.string.lesson_completed_title)) },
+                                text = { Text(stringResource(R.string.lesson_completed_message)) },
                                 confirmButton = {
                                     Button(
                                         onClick = { onAction(LessonDetailAction.ExitLesson) }
                                     ) {
-                                        Text("К миссии")
+                                        Text(stringResource(R.string.lesson_completed_button))
                                     }
                                 },
                                 shape = RoundedCornerShape(24.dp)
@@ -182,7 +173,7 @@ private fun LessonDetailScreenStep2Preview() {
         LessonDetailScreen(
             state = if (lightLesson != null && lightLesson.steps.size >= 2) {
                 val stepsCount = lightLesson.steps.size
-                val currentStepIndex = 1 // 0-based, so 1 = second step
+                val currentStepIndex = 2 // 0-based, so 1 = second step
                 val isLastStep = currentStepIndex == stepsCount - 1
                 LessonDetailUiState(
                     lessonTitle = lightLesson.title,
@@ -208,22 +199,16 @@ private fun LessonDetailScreenStep2Preview() {
     }
 }
 
-/**
- * Загружает реальный урок про свет из assets/lessons.json
- */
 private fun loadLightLessonFromAssets(context: Context): Lesson? {
     return try {
         val storage = LocalLessonStorage()
         val inputStream = context.assets.open("lessons.json")
         val lessons = storage.loadLessonsFromAssets(inputStream)
 
-        // Ищем урок про свет по ID
         val lightLesson = lessons.find { it.id == "fundamentals_light" }
 
-        // Если не нашли, возвращаем первый урок (для отладки)
         lightLesson ?: lessons.firstOrNull()
     } catch (e: Exception) {
-        // Если не удалось загрузить, возвращаем null
         null
     }
 }
