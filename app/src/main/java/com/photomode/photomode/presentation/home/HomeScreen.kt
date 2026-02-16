@@ -1,10 +1,29 @@
 package com.photomode.photomode.presentation.home
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.photomode.domain.model.Lesson
@@ -14,89 +33,162 @@ import com.photomode.domain.model.LessonStep
 import com.photomode.domain.model.Mission
 import com.photomode.domain.model.UserProgress
 import com.photomode.domain.usecase.home.LessonWithStatus
-import com.photomode.photomode.presentation.components.*
-import com.photomode.photomode.presentation.home.components.*
+import com.photomode.photomode.R
+import com.photomode.photomode.presentation.components.ErrorView
+import com.photomode.photomode.presentation.components.LoadingView
+import com.photomode.photomode.presentation.home.components.FundamentalsSection
+import com.photomode.photomode.presentation.home.components.LessonOfTheDayCard
+import com.photomode.photomode.presentation.home.components.ScenariosSection
+import com.photomode.photomode.presentation.home.components.TopBar
 import com.photomode.photomode.ui.theme.PhotoModeTheme
 
-/**
- * HomeScreen - чистый UI компонент (View в MVVM)
- * 
- * Принципы:
- * - Не знает про ViewModel напрямую
- * - Получает только State и Actions
- * - Легко тестируется
- * - Переиспользуемый
- */
+private val HorizontalPadding = 16.dp
+private val VerticalPadding = 12.dp
+private const val CardsVisibleInRow = 2.3f
+
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun HomeScreen(
     state: HomeUiState,
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.fillMaxSize()
-    ) {
-        // TopBar с миссией
-        TopBar(
-            progressPercentage = state.progressPercentage,
-            currentMission = state.currentMission,
-            onProfileClick = { onAction(HomeAction.OnProfileClick) }
-        )
+    Scaffold(
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.primary,
+        topBar = {
+            TopBar(
+                currentMission = state.currentMission,
+                onProfileClick = { onAction(HomeAction.OnProfileClick) }
+            )
+        }
+    ) { paddingValues ->
 
         when {
-            state.isLoading -> LoadingView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
-            state.error != null -> ErrorView(
-                message = state.error ?: "Ошибка",
-                onRetry = { onAction(HomeAction.RefreshData) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
-            else -> {
-                Column(
+            state.isLoading -> {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
                 ) {
-                    // Урок дня
-                    state.lessonOfTheDay?.let { lesson ->
-                        LessonOfTheDayCard(
-                            lesson = lesson,
-                            onClick = { onAction(HomeAction.OnLessonClick(lesson.id)) },
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                    }
+                    LoadingView()
+                }
+            }
 
-                    // База
-                    FundamentalsSection(
-                        lessons = state.fundamentalsLessons,
-                        onLessonClick = { lessonId ->
-                            onAction(HomeAction.OnLessonClick(lessonId))
-                        },
-                        onSeeAllClick = { onAction(HomeAction.OnFundamentalsClick) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Сценарии
-                    ScenariosSection(
-                        lessons = state.scenariosLessons,
-                        onLessonClick = { lessonId ->
-                            onAction(HomeAction.OnLessonClick(lessonId))
-                        },
-                        onSeeAllClick = { onAction(HomeAction.OnScenariosClick) },
-                        modifier = Modifier.fillMaxWidth()
+            state.error != null -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ErrorView(
+                        message = state.error,
+                        onRetry = { onAction(HomeAction.RefreshData) }
                     )
                 }
             }
+
+            else -> {
+                val config = LocalConfiguration.current
+                val horizontalCardWidth = (config.screenWidthDp.dp - HorizontalPadding * 2) / CardsVisibleInRow
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(horizontal = HorizontalPadding, vertical = VerticalPadding),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    state.lessonOfTheDay?.let { lesson ->
+                        item {
+                            LessonOfTheDayCard(
+                                lesson = lesson,
+                                onClick = { onAction(HomeAction.OnLessonClick(lesson.id)) }
+                            )
+                        }
+                    }
+
+                    item {
+                        SectionCard(
+                            title = stringResource(R.string.fundamental),
+                            onSeeAllClick = { onAction(HomeAction.OnFundamentalsClick) }
+                        ) {
+                            FundamentalsSection(
+                                lessons = state.fundamentalsLessons,
+                                cardWidth = horizontalCardWidth,
+                                onLessonClick = { lessonId ->
+                                    onAction(HomeAction.OnLessonClick(lessonId))
+                                }
+                            )
+                        }
+                    }
+
+                    item {
+                        SectionCard(
+                            title = stringResource(R.string.scenarios),
+                            onSeeAllClick = { onAction(HomeAction.OnScenariosClick) }
+                        ) {
+                            ScenariosSection(
+                                lessons = state.scenariosLessons,
+                                cardWidth = horizontalCardWidth,
+                                onLessonClick = { lessonId ->
+                                    onAction(HomeAction.OnLessonClick(lessonId))
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
         }
     }
 }
+
+@Composable
+fun SectionCard(
+    title: String? = null,
+    onSeeAllClick: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        tonalElevation = 1.dp,
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+
+            if (title != null) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    if (onSeeAllClick != null) {
+                        IconButton(onClick = onSeeAllClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                                contentDescription = stringResource(R.string.all_lessons)
+                            )
+                        }
+                    }
+                }
+            }
+
+            content()
+        }
+    }
+}
+
 
 @Preview(showBackground = true, name = "Home Screen - Success")
 @Composable
@@ -107,7 +199,9 @@ private fun HomeScreenPreview() {
             onAction = {}
         )
     }
-}/**
+}
+
+/**
  * Создает моковые данные для превью
  */
 private fun createPreviewHomeState(): HomeUiState {
@@ -116,11 +210,11 @@ private fun createPreviewHomeState(): HomeUiState {
         title = "Сфоткать любой ценой",
         requiredLessonIds = listOf("fundamentals_angle", "scenarios_cafe_portrait")
     )
-    
+
     val userProgress = UserProgress(
         completedLessonIds = setOf("fundamentals_light")
     )
-    
+
     val lessonOfTheDay = Lesson(
         id = "scenarios_cafe_portrait",
         title = "Портрет в кафе",
@@ -136,7 +230,7 @@ private fun createPreviewHomeState(): HomeUiState {
             )
         )
     )
-    
+
     val fundamentalsLessons = listOf(
         LessonWithStatus(
             lesson = Lesson(
@@ -182,9 +276,7 @@ private fun createPreviewHomeState(): HomeUiState {
             ),
             status = LessonStatus.NOT_STARTED
         )
-    )
-    
-    val scenariosLessons = listOf(
+    )    val scenariosLessons = listOf(
         LessonWithStatus(
             lesson = Lesson(
                 id = "scenarios_cafe_portrait",
@@ -208,7 +300,6 @@ private fun createPreviewHomeState(): HomeUiState {
             status = LessonStatus.NOT_STARTED
         )
     )
-    
     return HomeUiState(
         lessonOfTheDay = lessonOfTheDay,
         fundamentalsLessons = fundamentalsLessons,

@@ -3,4 +3,11 @@
     <string name="lesson_completed_title">Ееее, супер!</string>
     <string name="lesson_completed_message">Вы успешно завершили урок и стали на шаг ближе к крутым фотографиям!</string>
     <string name="lesson_completed_button">Продолжаем!</string>
+    <string name="menu">Меню</string>
+    <string name="mission">Текущая миссия:</string>
+    <string name="profile">Профиль</string>
+    <string name="fundamental">База</string>
+    <string name="scenarios">Сценарии</string>
+    <string name="all_lessons">Все уроки</string>
+    <string name="lesson_of_the_day">Урок дня</string>
 </resources>

@@ -1,63 +1,104 @@
 # PhotoMode
 
-Android app with short lessons on photography basics: light, horizon, angle, framing, and shooting scenarios (cafe portrait, group photo). Each lesson has theory steps, instructions, and practice; progress is saved on device.
+**A modular Android app for structured photography lessons — built with Jetpack Compose and a clear separation of UI, domain, and data.**
 
-## Screenshots
+Each lesson runs as a step-based flow (Theory → Instruction → Practice) with interactive examples and local progress. The codebase is structured for readability and maintainability: single-responsibility use cases, repository abstractions, and state-driven Compose UI.
 
-_Add screenshots of the home screen and a lesson screen (e.g. from a `screenshots/` folder)._
+---
+
+## What this project demonstrates
+
+- **Clean Architecture** — `domain` (models, contracts, use cases), `data` (repos, storage, assets), `app` (Compose, ViewModels, navigation)
+- **Modern Android** — Kotlin, Jetpack Compose, Material 3, Navigation Compose
+- **State & DI** — Unidirectional data flow, Koin for dependency injection
+- **Persistence** — DataStore for progress; lesson content from JSON assets
+- **Reusable UI** — Composable step cards (theory, instruction, practice), shared components
+
+---
+
+## Overview
+
+The app teaches photography basics: light, horizon, angle, framing, and real-world scenarios (e.g. cafe portrait, group photo). Users move through steps, see good vs bad examples, and complete lessons; progress is saved locally.
+
+| Home Screen | Lesson Screen |
+|-------------|---------------|
+| ![](screenshots/home.png) | ![](screenshots/lesson.png) |
+
+_Add `home.png` and `lesson.png` to the `screenshots/` folder to display the images above._
+
+---
 
 ## Features
 
-- **Lesson of the day** and **Fundamentals** / **Scenarios** sections on the home screen
-- **Lesson steps:** theory (good vs bad examples with interactive images), instruction (text + example image), practice (task)
-- **Progress:** completed lessons saved locally (DataStore)
-- **Current mission** shown in the top bar
+- Step-based lesson engine (Theory / Instruction / Practice)
+- Interactive image comparison (tap to reveal labels, auto-dismiss)
+- Lesson of the day + categories (Fundamentals, Scenarios)
+- Local progress persistence (DataStore)
+- Current myassion in the app bar
 
-## Tech Stack
+---
 
-- **Language:** Kotlin
-- **UI:** Jetpack Compose, Material 3
-- **Architecture:** Clean Architecture (domain / data / app)
-- **DI:** Koin
-- **Navigation:** Navigation Compose
-- **Persistence:** DataStore (Preferences)
-- **Images:** Coil
-- **Data:** lesson content from `data` module assets (`lessons.json`)
-
-## Project Structure
+## Architecture
 
 ```
 PhotoMode/
-├── app/          # UI, screens, ViewModels, Compose, Koin setup
-├── data/         # Repository impl, LocalLessonStorage, DataStore, assets (lessons.json)
-├── domain/       # Models, repository interfaces, use cases
-└── README.md
+├── app/        Compose UI, ViewModels, navigation, Koin module
+├── data/       Repository implementations, DataStore, LocalLessonStorage, lessons.json
+├── domain/     Models, repository interfaces, use cases
+└── screenshots/
 ```
 
-## Requirements
+- **domain** — No Android dependencies. Defines `Lesson`, `LessonStep`, repository contracts, and use cases.
+- **data** — Implements repositories, parses `lessons.json`, persists progress with DataStore.
+- **app** — Compose screens, ViewModels (state + events), single Activity, Koin DI.
 
-- Android Studio (latest stable recommended)
-- JDK 11+
-- minSdk 24, targetSdk 36
+UI state is held in ViewModels; composables are stateless and receive data + callbacks. Navigation is type-safe via routes and arguments.
 
-## How to Run
+---
 
-1. Clone the repository:
+## Tech stack
+
+| Layer        | Choice |
+|-------------|--------|
+| Language    | Kotlin |
+| UI          | Jetpack Compose, Material 3 |
+| Architecture| Clean Architecture (3 modules) |
+| DI          | Koin |
+| Navigation  | Navigation Compose |
+| Persistence | DataStore (Preferences) |
+| Images      | Coil |
+
+---
+
+## Running the project
+
+**Requirements:** Android Studio (latest stable), JDK 11+, minSdk 24.
+
+1. Clone and open:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/PhotoMode.git
+   git clone https://github.com/<your-username>/PhotoMode.git
    cd PhotoMode
    ```
-2. Open the project in Android Studio.
-3. Sync Gradle and run on a device or emulator (**Run** → Run 'app' or `Shift+F10`).
+   Open the project in Android Studio and sync Gradle.
 
-To build a debug APK from the command line:
+2. Run on a device or emulator (Run → Run 'app').
+
+**Build debug APK from terminal:**
 
 ```bash
 ./gradlew assembleDebug
 ```
 
-The APK will be in `app/build/outputs/apk/debug/app-debug.apk`. You can upload it to [Releases](https://github.com/YOUR_USERNAME/PhotoMode/releases) so others can install without building.
+Output: `app/build/outputs/apk/debug/app-debug.apk`. You can upload this to GitHub Releases so others can install without building.
 
-## Content
+---
 
-Lesson content is in `data/src/main/assets/lessons.json`. After editing, use **Build → Clean Project**, then **Run** so the app picks up changes.
+## Editing lesson content
+
+Lessons are defined in:
+
+```
+data/src/main/assets/lessons.json
+```
+
+After changing the file: **Build → Clean Project**, then run the app again so updated assets are loaded.

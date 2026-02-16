@@ -8,20 +8,25 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.photomode.domain.model.Mission
+import com.photomode.photomode.R
 
 @Composable
 fun TopBar(
-    progressPercentage: Int,
     currentMission: Mission?,
     onProfileClick: () -> Unit,
     onMenuClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        // Верхняя строка: меню, заголовок, прогресс, профиль
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
+    ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -29,21 +34,19 @@ fun TopBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Аватар/меню слева
             IconButton(onClick = onMenuClick) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = "Меню"
+                    contentDescription = stringResource(R.string.menu)
                 )
             }
 
-            // миссия
             currentMission?.let { mission ->
                 Column(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = "Текущая миссия:",
+                        text = stringResource(R.string.mission),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -56,7 +59,6 @@ fun TopBar(
 
             }
 
-            // профиль
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -64,7 +66,7 @@ fun TopBar(
                 IconButton(onClick = onProfileClick) {
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,
-                        contentDescription = "Профиль"
+                        contentDescription = stringResource(R.string.profile)
                     )
                 }
             }
