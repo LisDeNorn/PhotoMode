@@ -276,7 +276,8 @@ private fun createPreviewHomeState(): HomeUiState {
             ),
             status = LessonStatus.NOT_STARTED
         )
-    )    val scenariosLessons = listOf(
+    )
+    val scenariosLessons = listOf(
         LessonWithStatus(
             lesson = Lesson(
                 id = "scenarios_cafe_portrait",
