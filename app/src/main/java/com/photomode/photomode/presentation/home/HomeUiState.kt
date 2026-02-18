@@ -7,10 +7,10 @@ import com.photomode.domain.usecase.home.LessonWithStatus
 
 data class HomeUiState(
     val lessonOfTheDay: Lesson? = null,
-    val fundamentalsLessons: List<LessonWithStatus> = emptyList(),  // Уроки с статусами
-    val scenariosLessons: List<LessonWithStatus> = emptyList(),     // Уроки с статусами
-    val userProgress: UserProgress = UserProgress(),  // Прогресс пользователя
-    val currentMission: Mission? = null,  // Текущая миссия
+    val fundamentalsLessons: List<LessonWithStatus> = emptyList(),
+    val scenariosLessons: List<LessonWithStatus> = emptyList(),
+    val userProgress: UserProgress = UserProgress(),
+    val currentMission: Mission? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
     val progressPercentage: Int = 0

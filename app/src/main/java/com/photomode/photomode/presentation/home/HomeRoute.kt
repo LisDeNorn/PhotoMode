@@ -12,30 +12,31 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeRoute(
     navController: NavController
 ) {
-    // Koin автоматически создает ViewModel с зависимостями
     val viewModel: HomeViewModel = koinViewModel()
-    
+
     val state by viewModel.state.collectAsState()
 
     HomeScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                // Навигационные действия - обрабатываются в Route
                 is HomeAction.OnLessonClick -> {
                     navController.navigate(Routes.lessonDetail(action.lessonId))
                 }
+
                 is HomeAction.OnFundamentalsClick -> {
                     navController.navigate(Routes.lessonsList(LessonCategory.FUNDAMENTALS))
                 }
+
                 is HomeAction.OnScenariosClick -> {
                     navController.navigate(Routes.lessonsList(LessonCategory.SCENARIOS))
                 }
+
                 is HomeAction.OnProfileClick -> {
                     navController.navigate(Routes.PROFILE)
                 }
-                // Бизнес-действия - передаются в ViewModel
-                is HomeAction.RefreshData -> {
+
+                else -> {
                     viewModel.onAction(action)
                 }
             }

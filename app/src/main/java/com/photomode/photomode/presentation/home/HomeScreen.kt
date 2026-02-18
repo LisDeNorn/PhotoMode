@@ -92,7 +92,8 @@ fun HomeScreen(
 
             else -> {
                 val config = LocalConfiguration.current
-                val horizontalCardWidth = (config.screenWidthDp.dp - HorizontalPadding * 2) / CardsVisibleInRow
+                val horizontalCardWidth =
+                    (config.screenWidthDp.dp - HorizontalPadding * 2) / CardsVisibleInRow
 
                 LazyColumn(
                     modifier = Modifier
@@ -183,7 +184,6 @@ fun SectionCard(
                     }
                 }
             }
-
             content()
         }
     }
