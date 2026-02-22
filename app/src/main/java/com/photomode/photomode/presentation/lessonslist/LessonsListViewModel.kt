@@ -13,8 +13,12 @@ class LessonsListViewModel(
     private val getLessonsByCategoryUseCase: GetLessonsByCategoryUseCase,
     private val category: LessonCategory
 ) : ViewModel() {
-
-    private val _state = MutableStateFlow(LessonsListUiState())
+    private val _state = MutableStateFlow(
+        LessonsListUiState(
+            category = category,
+            isLoading = true
+        )
+    )
     val state: StateFlow<LessonsListUiState> = _state.asStateFlow()
 
     init {
@@ -26,14 +30,8 @@ class LessonsListViewModel(
             is LessonsListAction.RefreshData -> {
                 loadLessons()
             }
-            // Навигационные действия (OnLessonClick, OnBackClick)
-            // обрабатываются в Route, а не в ViewModel
-            LessonsListAction.OnBackClick -> {
-                // Игнорируем - навигация обрабатывается в Route
-            }
-            is LessonsListAction.OnLessonClick -> {
-                // Игнорируем - навигация обрабатывается в Route
-            }
+            is LessonsListAction.OnBackClick,
+            is LessonsListAction.OnLessonClick -> Unit
         }
     }
 
@@ -51,7 +49,7 @@ class LessonsListViewModel(
             } catch (e: Exception) {
                 _state.value = _state.value.copy(
                     isLoading = false,
-                    error = e.message ?: "Ошибка загрузки уроков"
+                    error = e.message ?: "Failed to load lessons"
                 )
             }
         }

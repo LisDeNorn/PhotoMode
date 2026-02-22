@@ -10,4 +10,6 @@
     <string name="scenarios">Сценарии</string>
     <string name="all_lessons">Все уроки</string>
     <string name="lesson_of_the_day">Урок дня</string>
+    <string name="lessons">Уроки</string>
+    <string name="back">Back</string>
 </resources>

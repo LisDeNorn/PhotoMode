@@ -47,8 +47,7 @@ fun TopBar(
                 ) {
                     Text(
                         text = stringResource(R.string.mission),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = MaterialTheme.typography.bodySmall
                     )
                     Text(
                         text = mission.title,
