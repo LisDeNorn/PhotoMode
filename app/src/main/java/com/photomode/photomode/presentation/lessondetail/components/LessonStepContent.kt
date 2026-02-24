@@ -3,7 +3,6 @@ package com.photomode.photomode.presentation.lessondetail.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -19,15 +18,15 @@ private const val IMAGES_AUTO_HIDE_DELAY_MS = 4000L
 @Composable
 fun LessonStepContent(
     step: LessonStep,
+    onStartPractice: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var isExpanded by remember(step) { mutableStateOf(false) }
 
     LaunchedEffect(isExpanded) {
-        if (isExpanded) {
-            delay(IMAGES_AUTO_HIDE_DELAY_MS)
-            isExpanded = false
-        }
+        if (!isExpanded) return@LaunchedEffect
+        delay(IMAGES_AUTO_HIDE_DELAY_MS)
+        isExpanded = false
     }
 
     when (step) {
@@ -55,6 +54,7 @@ fun LessonStepContent(
         is LessonStep.Practice -> {
             PracticeStepCard(
                 step = step,
+                onStartPractice = onStartPractice,
                 modifier = modifier
             )
         }

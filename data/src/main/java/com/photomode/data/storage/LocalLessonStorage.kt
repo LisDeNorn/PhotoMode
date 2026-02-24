@@ -1,4 +1,4 @@
-package com.photmode.data.storage
+package com.photomode.data.storage
 
 import com.photomode.domain.model.Lesson
 import com.photomode.domain.model.LessonCategory

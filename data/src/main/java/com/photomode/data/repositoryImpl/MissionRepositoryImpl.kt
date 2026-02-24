@@ -1,4 +1,4 @@
-package com.photmode.data.repositoryImpl
+package com.photomode.data.repositoryImpl
 
 import com.photomode.domain.model.Mission
 import com.photomode.domain.repository.MissionRepository

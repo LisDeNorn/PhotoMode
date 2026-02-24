@@ -1,10 +1,10 @@
-package com.photmode.data.repositoryImpl
+package com.photomode.data.repositoryImpl
 
 import android.content.Context
 import com.photomode.domain.model.Lesson
 import com.photomode.domain.model.LessonCategory
 import com.photomode.domain.repository.LessonRepository
-import com.photmode.data.storage.LocalLessonStorage
+import com.photomode.data.storage.LocalLessonStorage
 
 class LessonRepositoryImpl(
     private val context: Context

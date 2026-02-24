@@ -7,30 +7,32 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.photmode.data.storage.LocalLessonStorage
+import com.photomode.data.storage.LocalLessonStorage
 import com.photomode.domain.model.Lesson
 import com.photomode.photomode.R
 import com.photomode.photomode.presentation.components.ErrorView
 import com.photomode.photomode.presentation.components.LoadingView
+import com.photomode.photomode.presentation.lessondetail.components.LessonCompletionDialog
 import com.photomode.photomode.presentation.lessondetail.components.LessonNavigationButtons
 import com.photomode.photomode.presentation.lessondetail.components.LessonProgress
 import com.photomode.photomode.presentation.lessondetail.components.LessonStepContent
 import com.photomode.photomode.presentation.lessondetail.components.LessonTopBar
 import com.photomode.photomode.ui.theme.PhotoModeTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,9 +41,14 @@ fun LessonDetailScreen(
     onAction: (LessonDetailAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val practiceComingSoonMessage = stringResource(R.string.practice_coming_soon)
+
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.primary,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             LessonTopBar(
                 title = state.lessonTitle,
@@ -67,7 +74,7 @@ fun LessonDetailScreen(
                         onRetry = { onAction(LessonDetailAction.RefreshData) }
                     )
 
-                    state.currentStep != null -> {
+                    state.currentStep != null -> state.currentStep?.let { step ->
                         Column(modifier = Modifier.fillMaxSize()) {
                             LessonProgress(
                                 stepNumber = state.stepNumber,
@@ -84,14 +91,20 @@ fun LessonDetailScreen(
                                     .padding(horizontal = 24.dp, vertical = 16.dp)
                             ) {
                                 LessonStepContent(
-                                    step = state.currentStep,
+                                    step = step,
+                                    onStartPractice = {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(practiceComingSoonMessage)
+                                        }
+                                        onAction(LessonDetailAction.StartPractice)
+                                    },
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
 
                             LessonNavigationButtons(
                                 canGoBack = state.canGoBack,
-                                isLastStep = state.stepNumber == state.stepsCount,
+                                isLastStep = !state.canGoNext,
                                 onBack = { onAction(LessonDetailAction.PrevStep) },
                                 onNext = { onAction(LessonDetailAction.NextStep) },
                                 onComplete = { onAction(LessonDetailAction.CompleteLesson) },
@@ -100,25 +113,15 @@ fun LessonDetailScreen(
                                     .padding(horizontal = 24.dp, vertical = 16.dp)
                             )
                         }
-
-
-                        if (state.showCompletionDialog) {
-                            AlertDialog(
-                                onDismissRequest = { },
-                                title = { Text(stringResource(R.string.lesson_completed_title)) },
-                                text = { Text(stringResource(R.string.lesson_completed_message)) },
-                                confirmButton = {
-                                    Button(
-                                        onClick = { onAction(LessonDetailAction.ExitLesson) }
-                                    ) {
-                                        Text(stringResource(R.string.lesson_completed_button))
-                                    }
-                                },
-                                shape = RoundedCornerShape(24.dp)
-                            )
-                        }
                     }
                 }
+
+                if (state.showCompletionDialog) {
+                    LessonCompletionDialog(
+                        onExit = { onAction(LessonDetailAction.ExitLesson) }
+                    )
+                }
+
             }
         }
     }
@@ -135,26 +138,16 @@ private fun LessonDetailScreenPreview() {
 
         LessonDetailScreen(
             state = if (lightLesson != null) {
-                val stepsCount = lightLesson.steps.size
-                val isLastStep = stepsCount == 1
                 LessonDetailUiState(
                     lessonTitle = lightLesson.title,
                     lessonDescription = lightLesson.shortDescription,
-                    stepNumber = 1,
-                    stepsCount = stepsCount,
-                    currentStep = lightLesson.steps.firstOrNull(),
-                    canGoBack = false,
-                    canGoNext = !isLastStep,
-                    canCompleteLesson = isLastStep,
+                    steps = lightLesson.steps,
+                    currentStepIndex = 0,
                     isLoading = false,
-                    error = null,
                     isLessonCompleted = false
                 )
             } else {
-                LessonDetailUiState(
-                    isLoading = true,
-                    error = null
-                )
+                LessonDetailUiState(isLoading = true)
             },
             onAction = {}
         )
@@ -172,27 +165,16 @@ private fun LessonDetailScreenStep2Preview() {
 
         LessonDetailScreen(
             state = if (lightLesson != null && lightLesson.steps.size >= 2) {
-                val stepsCount = lightLesson.steps.size
-                val currentStepIndex = 2 // 0-based, so 1 = second step
-                val isLastStep = currentStepIndex == stepsCount - 1
                 LessonDetailUiState(
                     lessonTitle = lightLesson.title,
                     lessonDescription = lightLesson.shortDescription,
-                    stepNumber = currentStepIndex + 1, // 1-based for display
-                    stepsCount = stepsCount,
-                    currentStep = lightLesson.steps.getOrNull(currentStepIndex),
-                    canGoBack = true,
-                    canGoNext = !isLastStep,
-                    canCompleteLesson = isLastStep,
+                    steps = lightLesson.steps,
+                    currentStepIndex = 1,
                     isLoading = false,
-                    error = null,
                     isLessonCompleted = false
                 )
             } else {
-                LessonDetailUiState(
-                    isLoading = true,
-                    error = null
-                )
+                LessonDetailUiState(isLoading = true)
             },
             onAction = {}
         )

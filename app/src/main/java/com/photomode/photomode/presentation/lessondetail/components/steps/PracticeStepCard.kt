@@ -1,17 +1,26 @@
 package com.photomode.photomode.presentation.lessondetail.components.steps
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.photomode.domain.model.LessonStep
+import com.photomode.photomode.R
 
 @Composable
 fun PracticeStepCard(
     step: LessonStep.Practice,
+    onStartPractice: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -21,7 +30,7 @@ fun PracticeStepCard(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "🎯 ${step.title?.takeIf { it.isNotBlank() } ?: "Практика"}",
+            text = "🎯 ${step.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.practice_title)}",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
@@ -41,10 +50,10 @@ fun PracticeStepCard(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Button(
-                    onClick = { /* TODO: Запустить тренажер */ },
+                    onClick = onStartPractice,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Начать практику")
+                    Text(stringResource(R.string.practice_start))
                 }
             }
         }

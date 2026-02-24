@@ -1,8 +1,8 @@
 package com.photomode.photomode.di
 
-import com.photmode.data.repositoryImpl.LessonRepositoryImpl
-import com.photmode.data.repositoryImpl.MissionRepositoryImpl
-import com.photmode.data.repositoryImpl.ProgressRepositoryImpl
+import com.photomode.data.repositoryImpl.LessonRepositoryImpl
+import com.photomode.data.repositoryImpl.MissionRepositoryImpl
+import com.photomode.data.repositoryImpl.ProgressRepositoryImpl
 import com.photomode.domain.repository.LessonRepository
 import com.photomode.domain.repository.MissionRepository
 import com.photomode.domain.repository.ProgressRepository

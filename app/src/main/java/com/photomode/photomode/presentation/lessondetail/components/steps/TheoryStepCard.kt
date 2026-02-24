@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.photmode.data.storage.LocalLessonStorage
+import com.photomode.data.storage.LocalLessonStorage
 import com.photomode.domain.model.Lesson
 import com.photomode.domain.model.LessonStep
 import com.photomode.photomode.presentation.lessondetail.components.InteractiveImage

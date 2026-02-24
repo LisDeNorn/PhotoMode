@@ -28,16 +28,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
-/**
- * Презентационный компонент: только отрисовка изображения.
- * Используется только внутри экрана урока (теория, инструкция).
- *
- * @param imageUri URI изображения
- * @param contentDescription Описание для accessibility
- * @param label Подпись внизу (если null — подпись и обводка не показываются)
- * @param isExpanded Показывать ли обводку и подпись (управляется снаружи)
- * @param onTap Вызывается при тапе (используется только при label != null)
- */
 @Composable
 fun InteractiveImage(
     imageUri: String,
@@ -54,45 +44,33 @@ fun InteractiveImage(
 ) {
     val isInteractive = label != null
 
-    val borderWidth by animateFloatAsState(
-        targetValue = if (isInteractive && isExpanded) 3f else 0f,
-        animationSpec = tween(300),
-        label = "border_width"
-    )
-
     val labelAlpha by animateFloatAsState(
         targetValue = if (isInteractive && isExpanded) 1f else 0f,
         animationSpec = tween(300),
         label = "label_alpha"
     )
 
+    val clickableModifier =
+        if (isInteractive) {
+            Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onTap
+            )
+        } else Modifier
+
+    val borderModifier =
+        if (isInteractive && isExpanded) {
+            Modifier.border(3.dp, borderColor, shape)
+        } else Modifier
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(height)
             .clip(shape)
-            .then(
-                if (borderWidth > 0) {
-                    Modifier.border(
-                        width = borderWidth.dp,
-                        color = borderColor,
-                        shape = shape
-                    )
-                } else {
-                    Modifier
-                }
-            )
-            .then(
-                if (isInteractive) {
-                    Modifier.clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = onTap
-                    )
-                } else {
-                    Modifier
-                }
-            )
+            .then(borderModifier)
+            .then(clickableModifier)
     ) {
         AsyncImage(
             model = imageUri,
@@ -101,7 +79,7 @@ fun InteractiveImage(
             contentScale = contentScale
         )
 
-        if (isInteractive && labelAlpha > 0 && label != null) {
+        if (isInteractive && labelAlpha > 0f) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

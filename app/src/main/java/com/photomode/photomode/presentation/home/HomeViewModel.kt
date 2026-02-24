@@ -27,14 +27,14 @@ class HomeViewModel(
      */
     fun onAction(action: HomeAction) {
         when (action) {
-            is HomeAction.RefreshData -> {
+            HomeAction.RefreshData -> {
                 loadHomeData()
             }
 
             is HomeAction.OnLessonClick,
-            is HomeAction.OnFundamentalsClick,
-            is HomeAction.OnScenariosClick,
-            is HomeAction.OnProfileClick -> Unit
+            HomeAction.OnFundamentalsClick,
+            HomeAction.OnScenariosClick,
+            HomeAction.OnProfileClick -> Unit
         }
     }
 

@@ -1,8 +1,15 @@
 <resources>
     <string name="app_name">PhotoMode</string>
-    <string name="lesson_completed_title">Ееее, супер!</string>
+    <string name="lesson_completed_title">Еее, супер!</string>
     <string name="lesson_completed_message">Вы успешно завершили урок и стали на шаг ближе к крутым фотографиям!</string>
     <string name="lesson_completed_button">Продолжаем!</string>
+    <string name="exit_lesson">Выйти из урока</string>
+    <string name="lesson_nav_back">Назад</string>
+    <string name="lesson_nav_next">Далее</string>
+    <string name="lesson_nav_complete">Завершить</string>
+    <string name="practice_title">Практика</string>
+    <string name="practice_start">Начать практику</string>
+    <string name="practice_coming_soon">Данный функционал скоро будет добавлен</string>
     <string name="menu">Меню</string>
     <string name="mission">Текущая миссия:</string>
     <string name="profile">Профиль</string>

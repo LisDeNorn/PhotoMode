@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.photmode.data"
+    namespace = "com.photomode.data"
     compileSdk {
         version = release(36)
     }
