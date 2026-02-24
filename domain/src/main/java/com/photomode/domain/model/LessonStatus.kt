@@ -1,22 +1,9 @@
 package com.photomode.domain.model
 
-/**
- * Статус урока для отображения на главном экране
- */
+/** Lesson status for home screen display. */
 enum class LessonStatus {
-    /**
-     * Непройденный урок, необходимый для выполнения текущей миссии
-     */
     REQUIRED_FOR_MISSION,
-    
-    /**
-     * Обычный непройденный урок
-     */
     NOT_STARTED,
-    
-    /**
-     * Пройденный урок
-     */
     COMPLETED
 }
 

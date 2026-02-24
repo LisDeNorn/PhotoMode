@@ -2,6 +2,7 @@ package com.photomode.photomode.presentation.lessondetail
 
 import com.photomode.domain.model.LessonStep
 
+/** Lesson detail screen state. Source of truth: [steps], [currentStepIndex], [isLessonCompleted], [showCompletionDialog]. */
 data class LessonDetailUiState(
     val isLoading: Boolean = false,
     val error: String? = null,

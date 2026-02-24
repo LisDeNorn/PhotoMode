@@ -11,9 +11,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
-        // Koin инициализируется в PhotoModeApplication
-        // Здесь просто запускаем UI
         setContent {
             PhotoModeTheme {
                 NavigationGraph()

@@ -3,32 +3,26 @@ package com.photomode.domain.usecase.home
 import com.photomode.domain.model.Lesson
 import com.photomode.domain.model.LessonStatus
 import com.photomode.domain.model.Mission
-import com.photomode.domain.repository.ProgressRepository
+import com.photomode.domain.usecase.progress.IsLessonCompletedUseCase
 
 /**
- * Use Case для сортировки уроков по приоритету отображения
- * 
- * Приоритет:
- * 1. Непройденные для миссии (REQUIRED_FOR_MISSION)
- * 2. Непройденные обычные (NOT_STARTED)
- * 3. Пройденные (COMPLETED)
- * 
- * Принцип Clean Architecture: использует ProgressRepository для проверки статуса урока,
- * а не методы модели UserProgress.
+ * Use case for sorting lessons by display priority:
+ * 1. Required for mission (REQUIRED_FOR_MISSION)
+ * 2. Not started (NOT_STARTED)
+ * 3. Completed (COMPLETED)
  */
 class SortLessonsByPriorityUseCase(
-    private val progressRepository: ProgressRepository
+    private val isLessonCompletedUseCase: IsLessonCompletedUseCase
 ) {
     
     /**
-     * Сортирует уроки по приоритету и возвращает с их статусами
-     * 
-     * @param lessons список уроков для сортировки
-     * @param currentMission текущая миссия (для определения приоритета)
+     * Sorts lessons by priority and returns them with status.
+     * @param lessons list of lessons to sort
+     * @param currentMission current mission (for priority)
      */
     suspend operator fun invoke(
         lessons: List<Lesson>,
-        userProgress: com.photomode.domain.model.UserProgress, // Оставляем для совместимости, но не используем
+        userProgress: com.photomode.domain.model.UserProgress, // Kept for API compatibility
         currentMission: Mission?
     ): List<LessonWithStatus> {
         return lessons.map { lesson ->
@@ -43,36 +37,24 @@ class SortLessonsByPriorityUseCase(
         }
     }
     
-    /**
-     * Определяет статус урока
-     * 
-     * Использует ProgressRepository для проверки статуса урока,
-     * что соответствует принципам Clean Architecture.
-     */
+    /** Determines lesson status from IsLessonCompletedUseCase and current mission. */
     private suspend fun determineStatus(
         lesson: Lesson,
         currentMission: Mission?
     ): LessonStatus {
         return when {
-            // Пройденный - проверяем через Repository
-            progressRepository.isLessonCompleted(lesson.id) -> LessonStatus.COMPLETED
+            isLessonCompletedUseCase(lesson.id) -> LessonStatus.COMPLETED
             
-            // Непройденный, но нужен для миссии
+            // Not completed but required for mission
             currentMission?.requiredLessonIds?.contains(lesson.id) == true -> 
                 LessonStatus.REQUIRED_FOR_MISSION
             
-            // Обычный непройденный
             else -> LessonStatus.NOT_STARTED
         }
     }
     
     /**
-     * Применяет лимит к отсортированным урокам
-     * 
-     * Логика:
-     * - Сначала берем уроки для миссии
-     * - Если не хватило до лимита - добавляем обычные непройденные
-     * - Если все еще не хватило - добавляем пройденные
+     * Applies limit to sorted lessons: mission lessons first, then not started, then completed.
      */
     fun applyLimit(
         sortedLessons: List<LessonWithStatus>,
@@ -84,16 +66,11 @@ class SortLessonsByPriorityUseCase(
         
         val result = mutableListOf<LessonWithStatus>()
         
-        // 1. Добавляем уроки для миссии
         result.addAll(forMission.take(limit))
-        
-        // 2. Если не хватило - добавляем обычные непройденные
         if (result.size < limit) {
             val remaining = limit - result.size
             result.addAll(notStarted.take(remaining))
         }
-        
-        // 3. Если все еще не хватило - добавляем пройденные
         if (result.size < limit) {
             val remaining = limit - result.size
             result.addAll(completed.take(remaining))

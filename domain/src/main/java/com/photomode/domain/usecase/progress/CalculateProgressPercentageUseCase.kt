@@ -3,19 +3,15 @@ package com.photomode.domain.usecase.progress
 import com.photomode.domain.model.UserProgress
 
 /**
- * Use Case для вычисления процента прогресса пользователя
- * 
- * Принцип Clean Architecture: бизнес-логика вынесена из модели в Use Case.
- * Это делает код более тестируемым и соответствует принципам разделения ответственности.
+ * Use case for calculating user progress percentage.
+ * Business logic lives in the use case layer for testability.
  */
 class CalculateProgressPercentageUseCase {
-    
+
     /**
-     * Вычисляет процент прогресса от общего количества уроков
-     * 
-     * @param userProgress прогресс пользователя
-     * @param totalLessons общее количество уроков
-     * @return процент прогресса от 0 до 100
+     * @param userProgress user progress
+     * @param totalLessons total number of lessons
+     * @return progress percentage from 0 to 100
      */
     operator fun invoke(
         userProgress: UserProgress,

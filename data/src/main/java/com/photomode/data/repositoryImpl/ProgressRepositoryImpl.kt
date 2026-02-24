@@ -12,16 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-/**
- * Реализация ProgressRepository с использованием DataStore
- * 
- * DataStore - современный способ хранения данных в Android.
- * Преимущества:
- * - Типобезопасность
- * - Асинхронный API
- * - Поддержка Flow для реактивности
- * - Надежнее SharedPreferences
- */
+/** ProgressRepository implementation using DataStore. */
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_progress")
 
 class ProgressRepositoryImpl(
@@ -58,10 +49,7 @@ class ProgressRepositoryImpl(
             .get(completedLessonsKey) ?: emptySet()
     }
     
-    /**
-     * Flow для реактивного отслеживания прогресса
-     * Можно использовать для автоматического обновления UI
-     */
+    /** Flow for reactive progress updates (e.g. auto-refresh UI). */
     fun getUserProgressFlow(): Flow<UserProgress> {
         return context.dataStore.data.map { preferences ->
             val completedIds = preferences[completedLessonsKey] ?: emptySet()

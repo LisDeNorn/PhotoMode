@@ -1,6 +1,5 @@
 package com.photomode.domain.usecase.home
 
-import com.photomode.domain.repository.ProgressRepository
 import com.photomode.domain.usecase.lesson.GetFundamentalsLessonsUseCase
 import com.photomode.domain.usecase.lesson.GetLessonOfTheDayUseCase
 import com.photomode.domain.usecase.lesson.GetScenariosLessonsUseCase
@@ -8,16 +7,8 @@ import com.photomode.domain.usecase.mission.GetCurrentMissionUseCase
 import com.photomode.domain.usecase.progress.GetUserProgressUseCase
 
 /**
- * Композитный Use Case для загрузки всех данных главного экрана
- * 
- * Использует другие Use Cases для получения данных.
- * Это упрощает ViewModel - вместо 3 Use Cases передается только один.
- * 
- * Преимущества:
- * - Инкапсулирует логику загрузки данных главного экрана
- * - Упрощает ViewModel (меньше зависимостей)
- * - Легче тестировать (можно мокировать один Use Case)
- * - Показывает понимание композиции Use Cases
+ * Composite use case that loads all home screen data.
+ * Composes other use cases so the ViewModel has a single dependency.
  */
 class GetHomeDataUseCase(
     private val getLessonOfTheDayUseCase: GetLessonOfTheDayUseCase,
@@ -25,9 +16,8 @@ class GetHomeDataUseCase(
     private val getScenariosLessonsUseCase: GetScenariosLessonsUseCase,
     private val getUserProgressUseCase: GetUserProgressUseCase,
     private val getCurrentMissionUseCase: GetCurrentMissionUseCase,
-    private val progressRepository: ProgressRepository
+    private val sortLessonsByPriorityUseCase: SortLessonsByPriorityUseCase
 ) {
-    private val sortLessonsUseCase = SortLessonsByPriorityUseCase(progressRepository)
     
     suspend operator fun invoke(): HomeData {
         val userProgress = getUserProgressUseCase()
@@ -35,30 +25,27 @@ class GetHomeDataUseCase(
         
         val lessonOfTheDay = getLessonOfTheDayUseCase()
         
-        // Получаем все уроки по категориям
         val allFundamentals = getFundamentalsLessonsUseCase(limit = Int.MAX_VALUE)
         val allScenarios = getScenariosLessonsUseCase()
         
-        // Сортируем по приоритету
-        val sortedFundamentals = sortLessonsUseCase(
+        val sortedFundamentals = sortLessonsByPriorityUseCase(
             lessons = allFundamentals,
             userProgress = userProgress,
             currentMission = currentMission
         )
         
-        val sortedScenarios = sortLessonsUseCase(
+        val sortedScenarios = sortLessonsByPriorityUseCase(
             lessons = allScenarios,
             userProgress = userProgress,
             currentMission = currentMission
         )
         
-        // Применяем лимит 10 карточек с приоритетом
-        val fundamentalsWithLimit = sortLessonsUseCase.applyLimit(
+        val fundamentalsWithLimit = sortLessonsByPriorityUseCase.applyLimit(
             sortedLessons = sortedFundamentals,
             limit = 10
         )
         
-        val scenariosWithLimit = sortLessonsUseCase.applyLimit(
+        val scenariosWithLimit = sortLessonsByPriorityUseCase.applyLimit(
             sortedLessons = sortedScenarios,
             limit = 10
         )

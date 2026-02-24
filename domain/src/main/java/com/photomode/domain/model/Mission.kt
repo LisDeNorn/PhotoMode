@@ -1,14 +1,10 @@
 package com.photomode.domain.model
 
-/**
- * Модель миссии пользователя
- * 
- * Миссия определяет цель и список уроков, необходимых для её выполнения.
- */
+/** User mission: goal and required lesson IDs. */
 data class Mission(
     val id: String,
-    val title: String,  // Например: "Сфоткать любой ценой"
-    val requiredLessonIds: List<String>  // ID уроков, необходимых для миссии
+    val title: String,
+    val requiredLessonIds: List<String>
 )
 
 

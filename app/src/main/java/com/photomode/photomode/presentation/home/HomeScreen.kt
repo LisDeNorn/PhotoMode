@@ -201,9 +201,7 @@ private fun HomeScreenPreview() {
     }
 }
 
-/**
- * Создает моковые данные для превью
- */
+/** Creates mock data for preview. */
 private fun createPreviewHomeState(): HomeUiState {
     val mission = Mission(
         id = "mission_1",

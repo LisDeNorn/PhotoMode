@@ -1,11 +1,6 @@
 package com.photomode.domain.model
 
-/**
- * Модель прогресса пользователя
- * 
- * Хранит информацию о пройденных уроках.
- *
- */
+/** User progress model — completed lesson IDs. */
 data class UserProgress(
     val completedLessonIds: Set<String> = emptySet()
 )

@@ -2,9 +2,7 @@ package com.photomode.domain.usecase.progress
 
 import com.photomode.domain.repository.ProgressRepository
 
-/**
- * Use Case для отметки урока как пройденного
- */
+/** Use case for marking a lesson as completed. */
 class MarkLessonCompletedUseCase(
     private val repository: ProgressRepository
 ) {

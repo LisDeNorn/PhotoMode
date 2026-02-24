@@ -1,18 +1,18 @@
 package com.photomode.domain.model
 
-// Типы шагов, из которых строится урок.
+/** Step types that make up a lesson. */
 sealed class LessonStep {
-    // 1. ШАГ ТЕОРИИ (сравнение "до/после")
+    /** Theory step (before/after comparison). */
     data class Theory(
         val title: String,
         val description: String,
-        val goodExampleImage: String, // URL или ресурс
+        val goodExampleImage: String,
         val badExampleImage: String,
-        val goodExampleLabel: String = "✅ Хорошо", // Подпись для хорошего примера
-        val badExampleLabel: String = "❌ Плохо"    // Подпись для плохого примера
+        val goodExampleLabel: String = "✅ Хорошо",
+        val badExampleLabel: String = "❌ Плохо"
     ) : LessonStep()
 
-    // 2. ШАГ ИНСТРУКЦИИ (куда ставить объект)
+    /** Instruction step. */
     data class Instruction(
         val title: String,
         val text: String,
@@ -20,7 +20,7 @@ sealed class LessonStep {
         val exampleImageLabel: String? = null
     ) : LessonStep()
 
-    // 3. ШАГ ПРАКТИКИ (ссылка на тренажёр)
+    /** Practice step (link to trainer). */
     data class Practice(
         val title: String,
         val task: String

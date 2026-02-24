@@ -12,10 +12,7 @@ class LessonRepositoryImpl(
     
     private val storage = LocalLessonStorage()
 
-    /**
-     * Загружает уроки из assets. Единственный источник: data/src/main/assets/lessons.json
-     * (мержится в APK при сборке app). После изменений: Build → Clean Project, затем Run.
-     */
+    /** Loads lessons from assets (data/src/main/assets/lessons.json). After edits: Build → Clean, then Run. */
     private fun loadLessons(): List<Lesson> {
         val inputStream = context.assets.open("lessons.json")
         return storage.loadLessonsFromAssets(inputStream)

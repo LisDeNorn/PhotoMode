@@ -3,24 +3,16 @@ package com.photomode.data.repositoryImpl
 import com.photomode.domain.model.Mission
 import com.photomode.domain.repository.MissionRepository
 
-/**
- * Реализация MissionRepository
- * 
- * Пока возвращает захардкоженную миссию.
- * В будущем можно хранить в DataStore или получать с сервера.
- */
+/** MissionRepository implementation. Currently returns hardcoded mission; can be replaced with DataStore or API. */
 class MissionRepositoryImpl : MissionRepository {
-    
+
     override suspend fun getCurrentMission(): Mission? {
-        // Пока возвращаем захардкоженную миссию
-        // В будущем можно получать из DataStore или с сервера
         return Mission(
             id = "mission_1",
             title = "Сфоткать любой ценой",
             requiredLessonIds = listOf(
-                // Уроки, необходимые для выполнения миссии
-                "fundamentals_angle",  // Ракурс
-                "scenarios_cafe_portrait"  // Портрет в кафе
+                "fundamentals_angle",
+                "scenarios_cafe_portrait"
             )
         )
     }

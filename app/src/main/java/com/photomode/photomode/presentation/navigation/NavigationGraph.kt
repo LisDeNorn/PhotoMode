@@ -15,14 +15,7 @@ import com.photomode.photomode.presentation.lessonslist.LessonsListRoute
 import com.photomode.photomode.presentation.lessondetail.LessonDetailRoute
 import com.photomode.domain.model.LessonCategory
 
-/**
- * Routes - централизованное хранение маршрутов
- * 
- * Преимущества:
- * - Типобезопасность
- * - Легко рефакторить
- * - Один источник правды
- */
+/** Centralized route definitions. */
 object Routes {
     const val HOME = "home"
     const val LESSONS_LIST = "lessonsList"
@@ -33,14 +26,7 @@ object Routes {
     fun lessonDetail(lessonId: String) = "$LESSON_DETAIL/$lessonId"
 }
 
-/**
- * NavigationGraph - навигационный граф приложения
- * 
- * Принципы:
- * - Не знает про ViewModel
- * - Знает только про Routes
- * - Каждый Route сам создает свой ViewModel
- */
+/** App navigation graph. Each route creates its own ViewModel. */
 @Composable
 fun NavigationGraph() {
     val navController = rememberNavController()
@@ -86,7 +72,7 @@ fun NavigationGraph() {
         }
 
         composable(Routes.PROFILE) {
-            // TODO: Создать ProfileRoute
+            // TODO: Add ProfileRoute
             Text(
                 text = "Profile Screen",
                 modifier = Modifier.padding(16.dp)
@@ -94,77 +80,3 @@ fun NavigationGraph() {
         }
     }
 }
-
-//sealed class Screen(val route: String) {
-//    object Home : Screen("home")
-//    data class LessonsList(val category: String) : Screen("lessonsList/{category}") {
-//        fun createRoute(category: LessonCategory) = "lessonsList/${category.name}"
-//    }
-//    data class LessonDetail(val lessonId: String) : Screen("lessonDetail/{lessonId}") {
-//        fun createRoute(lessonId: String) = "lessonDetail/$lessonId"
-//    }
-//    object Profile : Screen("profile")
-//}
-//
-//@Composable
-//fun NavigationGraph(
-//    navController: NavHostController = rememberNavController()
-//) {
-//    NavHost(
-//        navController = navController,
-//        startDestination = Screen.Home.route
-//    ) {
-//        composable(Screen.Home.route) {
-//            HomeScreen(
-//                onLessonClick = { lessonId ->
-//                    navController.navigate(Screen.LessonDetail(lessonId).createRoute(lessonId))
-//                },
-//                onFundamentalsClick = {
-//                    navController.navigate(Screen.LessonsList("").createRoute(LessonCategory.FUNDAMENTALS))
-//                },
-//                onScenariosClick = {
-//                    navController.navigate(Screen.LessonsList("").createRoute(LessonCategory.SCENARIOS))
-//                },
-//                onProfileClick = {
-//                    navController.navigate(Screen.Profile.route)
-//                }
-//            )
-//        }
-//
-//        composable(Screen.LessonsList("").route) { backStackEntry ->
-//            val categoryName = backStackEntry.arguments?.getString("category") ?: ""
-//            val category = try {
-//                LessonCategory.valueOf(categoryName)
-//            } catch (e: IllegalArgumentException) {
-//                LessonCategory.FUNDAMENTALS
-//            }
-//
-//            LessonsListScreen(
-//                category = category,
-//                onLessonClick = { lessonId ->
-//                    navController.navigate(Screen.LessonDetail(lessonId).createRoute(lessonId))
-//                },
-//                onBackClick = {
-//                    navController.popBackStack()
-//                }
-//            )
-//        }
-//
-//        composable(Screen.LessonDetail("").route) { backStackEntry ->
-//            val lessonId = backStackEntry.arguments?.getString("lessonId") ?: ""
-//            // TODO: Создать LessonDetailScreen
-//            Text(
-//                text = "Lesson Detail: $lessonId",
-//                modifier = Modifier.padding(16.dp)
-//            )
-//        }
-//
-//        composable(Screen.Profile.route) {
-//            // TODO: Создать ProfileScreen
-//            Text(
-//                text = "Profile Screen",
-//                modifier = Modifier.padding(16.dp)
-//            )
-//        }
-//    }
-//}

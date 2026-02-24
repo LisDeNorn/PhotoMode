@@ -2,13 +2,8 @@ package com.photomode.domain.repository
 
 import com.photomode.domain.model.Mission
 
-/**
- * Repository для работы с миссиями
- */
+/** Repository for user missions. */
 interface MissionRepository {
-    /**
-     * Получить текущую активную миссию пользователя
-     */
     suspend fun getCurrentMission(): Mission?
 }
 

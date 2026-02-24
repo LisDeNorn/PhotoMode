@@ -1,25 +1,22 @@
 package com.photomode.photomode
 
 import android.app.Application
-import com.photomode.photomode.di.appModule
+import com.photomode.photomode.di.repositoryModule
+import com.photomode.photomode.di.useCaseModule
+import com.photomode.photomode.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 /**
- * Application класс для инициализации Koin
- * 
- * Koin инициализируется один раз при запуске приложения
- * и управляет всеми зависимостями через модули.
+ * Application class for Koin initialization.
+ * Modules are split by layer: repositories, use cases, view models.
  */
 class PhotoModeApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        
         startKoin {
-            // Передаем Context для использования в модулях
             androidContext(this@PhotoModeApplication)
-            // Регистрируем модули с зависимостями
-            modules(appModule)
+            modules(repositoryModule, useCaseModule, viewModelModule)
         }
     }
 }
