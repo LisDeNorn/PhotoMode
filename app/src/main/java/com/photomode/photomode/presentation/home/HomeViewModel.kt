@@ -6,6 +6,7 @@ import com.photomode.domain.usecase.home.GetHomeDataUseCase
 import com.photomode.domain.usecase.progress.CalculateProgressPercentageUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -61,6 +62,8 @@ class HomeViewModel(
                     isLoading = false,
                     error = null
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _state.value = _state.value.copy(
                     isLoading = false,

@@ -6,6 +6,7 @@ import com.photomode.domain.model.LessonCategory
 import com.photomode.domain.usecase.lesson.GetLessonsByCategoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -46,6 +47,8 @@ class LessonsListViewModel(
                     lessons = lessons,
                     isLoading = false
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _state.value = _state.value.copy(
                     isLoading = false,
