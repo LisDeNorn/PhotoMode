@@ -68,12 +68,17 @@ fun HorizontalLessonCard(
                 contentDescription = lesson.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1.4f)
+                    .aspectRatio(1.2f)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.height(6.dp))
-            Column(modifier = Modifier.heightIn(min = 56.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                verticalArrangement = Arrangement.Top
+            ) {
                 Text(
                     text = lesson.title,
                     style = MaterialTheme.typography.titleSmall,
