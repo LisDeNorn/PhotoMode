@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.photomode.domain.model.LessonStep
 import com.photomode.photomode.R
+import com.photomode.domain.model.LessonStep
 
 @Composable
 fun PracticeStepCard(

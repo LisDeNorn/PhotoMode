@@ -30,7 +30,6 @@ fun LessonStepContent(
     }
 
     when (step) {
-
         is LessonStep.Theory -> {
             TheoryStepCard(
                 step = step,
@@ -40,7 +39,6 @@ fun LessonStepContent(
                 modifier = modifier
             )
         }
-
         is LessonStep.Instruction -> {
             InstructionStepCard(
                 step = step,
@@ -50,7 +48,6 @@ fun LessonStepContent(
                 modifier = modifier
             )
         }
-
         is LessonStep.Practice -> {
             PracticeStepCard(
                 step = step,

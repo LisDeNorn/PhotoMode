@@ -116,7 +116,6 @@ private fun TheoryStepCardPreview() {
             loadLightLessonFromAssets(context)
         }
         val theoryStep = lightLesson?.steps?.filterIsInstance<LessonStep.Theory>()?.firstOrNull()
-
         if (theoryStep != null) {
             TheoryStepCard(
                 step = theoryStep,
