@@ -6,6 +6,20 @@ Each lesson runs as a step-based flow (Theory → Instruction → Practice) with
 
 ---
 
+## Product Vision
+
+This project aims to teach mobile photography through short, visual, and practical lessons.
+
+Instead of long tutorials, each lesson focuses on a single concept and follows a structured flow:
+
+Theory → Instruction → Practice
+
+Users first see visual examples, then receive simple shooting instructions, and finally apply the concept in a real-world scenario.
+
+The goal is to make photography learning fast, practical, and accessible directly from a mobile device.
+
+---
+
 ## What this project demonstrates
 
 - **Clean Architecture** — `domain` (models, contracts, use cases), `data` (repos, storage, assets), `app` (Compose, ViewModels, navigation)
@@ -34,7 +48,7 @@ _Add `home.png` and `lesson.png` to the `screenshots/` folder to display the ima
 - Interactive image comparison (tap to reveal labels, auto-dismiss)
 - Lesson of the day + categories (Fundamentals, Scenarios)
 - Local progress persistence (DataStore)
-- Current myassion in the app bar
+- Current mission in the app bar
 
 ---
 
