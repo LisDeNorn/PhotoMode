@@ -1,8 +1,10 @@
 # PhotoMode
 
-**A modular Android app for structured photography lessons — built with Jetpack Compose and a clear separation of UI, domain, and data.**
+**Kotlin • Jetpack Compose • Clean Architecture • Koin • DataStore**
 
-Each lesson runs as a step-based flow (Theory → Instruction → Practice) with interactive examples and local progress. The codebase is structured for readability and maintainability: single-responsibility use cases, repository abstractions, and state-driven Compose UI.
+A modular Android app for structured photography lessons — built with Jetpack Compose and a clear separation of UI, domain, and data.
+
+Each lesson follows a step-based learning flow: **Theory → Instruction → Practice**. Users see visual examples, receive simple shooting instructions, and get a practice task (coming soon). Progress is saved locally. The codebase is structured for readability and maintainability: single-responsibility use cases, repository abstractions, and state-driven Compose UI.
 
 ---
 
@@ -14,7 +16,7 @@ Instead of long tutorials, each lesson focuses on a single concept and follows a
 
 Theory → Instruction → Practice
 
-Users first see visual examples, then receive simple shooting instructions, and finally apply the concept in a real-world scenario.
+Users first see visual examples, then receive simple shooting instructions, and finally get a practice task (coming soon).
 
 The goal is to make photography learning fast, practical, and accessible directly from a mobile device.
 
@@ -38,7 +40,7 @@ The app teaches photography basics: light, horizon, angle, framing, and real-wor
 |-------------|---------------|
 | ![](screenshots/home.png) | ![](screenshots/lesson.png) |
 
-_Add `home.png` and `lesson.png` to the `screenshots/` folder to display the images above._
+_Screenshots from the running application._
 
 ---
 
@@ -47,12 +49,27 @@ _Add `home.png` and `lesson.png` to the `screenshots/` folder to display the ima
 - Step-based lesson engine (Theory / Instruction / Practice)
 - Interactive image comparison (tap to reveal labels, auto-dismiss)
 - Lesson of the day + categories (Fundamentals, Scenarios)
+- Priority-based lesson sorting based on mission and completion state
 - Local progress persistence (DataStore)
 - Current mission in the app bar
 
 ---
 
 ## Architecture
+
+### Architecture layers
+
+```
+app (presentation)
+   ↓
+data (repositories, storage)
+   ↓
+domain (models, use cases)
+```
+
+The domain layer is pure Kotlin and does not depend on Android APIs, which keeps business logic isolated and testable.
+
+**Module layout:**
 
 ```
 PhotoMode/
@@ -66,7 +83,7 @@ PhotoMode/
 - **data** — Implements repositories, parses `lessons.json`, persists progress with DataStore.
 - **app** — Compose screens, ViewModels (state + events), single Activity, Koin DI.
 
-UI state is held in ViewModels; composables are stateless and receive data + callbacks. Navigation is type-safe via routes and arguments.
+UI state is held in ViewModels. Business logic is implemented in dedicated use cases rather than inside ViewModels. Composables are stateless and receive data + callbacks. Navigation is type-safe via routes and arguments.
 
 ---
 
@@ -107,12 +124,4 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`. You can upload this to GitH
 
 ---
 
-## Editing lesson content
-
-Lessons are defined in:
-
-```
-data/src/main/assets/lessons.json
-```
-
-After changing the file: **Build → Clean Project**, then run the app again so updated assets are loaded.
+Lesson content is defined in `data/src/main/assets/lessons.json`. After editing: **Build → Clean Project**, then run the app again.
