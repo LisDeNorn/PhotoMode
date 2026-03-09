@@ -124,4 +124,4 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`. You can upload this to GitH
 
 ---
 
-Lesson content is defined in `data/src/main/assets/lessons.json`. After editing: **Build → Clean Project**, then run the app again.
+Lesson content is defined in `data/src/main/assets/lessons.json`. All lesson images live in the **data** module: `data/src/main/assets/images/thumbnails/` for previews; `data/src/main/assets/images/lessons/<lesson_id>/` for step images (one folder per lesson). After editing: **Build → Clean Project**, then run the app again.
