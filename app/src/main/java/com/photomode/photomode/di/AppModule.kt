@@ -1,5 +1,7 @@
 package com.photomode.photomode.di
 
+import androidx.room.Room
+import com.photomode.data.local.db.PhotoModeDatabase
 import com.photomode.data.repositoryImpl.LessonRepositoryImpl
 import com.photomode.data.repositoryImpl.MissionRepositoryImpl
 import com.photomode.data.repositoryImpl.ProgressRepositoryImpl
@@ -29,6 +31,16 @@ val repositoryModule = module {
     single<LessonRepository> { LessonRepositoryImpl(get()) }
     single<ProgressRepository> { ProgressRepositoryImpl(get()) }
     single<MissionRepository> { MissionRepositoryImpl() }
+    single {
+        Room.databaseBuilder(
+            get(),
+            PhotoModeDatabase::class.java,
+            "photomode_db"
+        ).build()
+    }
+    single {
+        get<PhotoModeDatabase>().completedLessonDao()
+    }
 }
 
 /** Use cases (factory). */

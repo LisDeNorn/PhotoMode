@@ -7,7 +7,6 @@ interface ProgressRepository {
     suspend fun getUserProgress(): UserProgress
     suspend fun markLessonAsCompleted(lessonId: String)
     suspend fun isLessonCompleted(lessonId: String): Boolean
-    suspend fun getCompletedLessonIds(): Set<String>
 }
 
 
