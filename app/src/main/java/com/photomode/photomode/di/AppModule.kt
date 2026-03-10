@@ -17,6 +17,7 @@ import com.photomode.domain.usecase.lesson.GetLessonsByCategoryUseCase
 import com.photomode.domain.usecase.lesson.GetScenariosLessonsUseCase
 import com.photomode.domain.usecase.mission.GetCurrentMissionUseCase
 import com.photomode.domain.usecase.progress.CalculateProgressPercentageUseCase
+import com.photomode.domain.usecase.progress.GetUserProgressFlowUseCase
 import com.photomode.domain.usecase.progress.GetUserProgressUseCase
 import com.photomode.domain.usecase.progress.IsLessonCompletedUseCase
 import com.photomode.domain.usecase.progress.MarkLessonCompletedUseCase
@@ -51,6 +52,7 @@ val useCaseModule = module {
     factory { GetLessonsByCategoryUseCase(get()) }
     factory { GetLessonByIdUseCase(get()) }
     factory { GetUserProgressUseCase(get()) }
+    factory { GetUserProgressFlowUseCase(get()) }
     factory { MarkLessonCompletedUseCase(get()) }
     factory { CalculateProgressPercentageUseCase() }
     factory { GetCurrentMissionUseCase(get()) }
@@ -61,9 +63,9 @@ val useCaseModule = module {
             getLessonOfTheDayUseCase = get(),
             getFundamentalsLessonsUseCase = get(),
             getScenariosLessonsUseCase = get(),
-            getUserProgressUseCase = get(),
             getCurrentMissionUseCase = get(),
-            sortLessonsByPriorityUseCase = get()
+            sortLessonsByPriorityUseCase = get(),
+            getUserProgressFlowUseCase = get()
         )
     }
 }

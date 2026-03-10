@@ -1,17 +1,16 @@
 package com.photomode.data.repositoryImpl
 
-import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.photomode.data.local.db.dao.CompletedLessonDao
 import com.photomode.data.local.db.entity.CompletedLessonEntity
 import com.photomode.domain.model.UserProgress
 import com.photomode.domain.repository.ProgressRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /** ProgressRepository implementation using Room. */
 class ProgressRepositoryImpl(
     private val dao: CompletedLessonDao
 ) : ProgressRepository {
-
-    private val completedLessonsKey = stringSetPreferencesKey("completed_lesson_ids")
 
     override suspend fun getUserProgress(): UserProgress {
         val completedIds = dao.getCompletedLessonIds()
@@ -33,8 +32,12 @@ class ProgressRepositoryImpl(
     }
 
 
-    /** Flow for reactive progress updates (e.g. auto-refresh UI). */
-
+    override fun getUserProgressFlow(): Flow<UserProgress> {
+        return dao.getCompletedLessonIdsFlow()
+            .map { ids ->
+                UserProgress(completedLessonIds = ids.toSet())
+            }
+    }
 }
 
 

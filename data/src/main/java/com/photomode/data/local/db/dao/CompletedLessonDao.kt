@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.photomode.data.local.db.entity.CompletedLessonEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CompletedLessonDao {
@@ -14,4 +15,7 @@ interface CompletedLessonDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: CompletedLessonEntity)
+
+    @Query("SELECT lessonId FROM completed_lessons")
+    fun getCompletedLessonIdsFlow(): Flow<List<String>>
 }
