@@ -25,13 +25,14 @@ class GetHomeDataUseCase(
 ) {
 
     operator fun invoke(): Flow<HomeData> = flow {
-        val lessonOfTheDay = getLessonOfTheDayUseCase()
         val currentMission = getCurrentMissionUseCase()
-        val allFundamentals = getFundamentalsLessonsUseCase()
+        val allFundamentals = getFundamentalsLessonsUseCase(limit = Int.MAX_VALUE)
         val allScenarios = getScenariosLessonsUseCase()
+        val allLessons = allFundamentals + allScenarios
 
         emitAll(
             getUserProgressFlowUseCase().map { userProgress ->
+                val lessonOfTheDay = getLessonOfTheDayUseCase(allLessons, userProgress)
                 val sortedFundamentals = sortLessonsByPriorityUseCase(
                     lessons = allFundamentals,
                     userProgress = userProgress,

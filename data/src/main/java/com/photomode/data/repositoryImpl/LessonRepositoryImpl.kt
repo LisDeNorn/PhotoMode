@@ -30,10 +30,6 @@ class LessonRepositoryImpl(
         return loadLessons().find { it.id == id }
     }
 
-    override suspend fun getLessonOfTheDay(): Lesson? {
-        return loadLessons().firstOrNull()
-    }
-
     override suspend fun getFundamentalsLessons(limit: Int): List<Lesson> {
         return loadLessons()
             .filter { it.category == LessonCategory.FUNDAMENTALS }
@@ -44,4 +40,3 @@ class LessonRepositoryImpl(
         return loadLessons().filter { it.category == LessonCategory.SCENARIOS }
     }
 }
-

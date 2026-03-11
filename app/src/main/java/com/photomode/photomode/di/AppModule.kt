@@ -1,13 +1,17 @@
 package com.photomode.photomode.di
 
 import androidx.room.Room
+import com.photomode.data.local.LessonOfTheDayCacheImpl
 import com.photomode.data.local.db.PhotoModeDatabase
 import com.photomode.data.repositoryImpl.LessonRepositoryImpl
+import com.photomode.data.util.TimeSourceImpl
 import com.photomode.data.repositoryImpl.MissionRepositoryImpl
 import com.photomode.data.repositoryImpl.ProgressRepositoryImpl
+import com.photomode.domain.repository.LessonOfTheDayCache
 import com.photomode.domain.repository.LessonRepository
 import com.photomode.domain.repository.MissionRepository
 import com.photomode.domain.repository.ProgressRepository
+import com.photomode.domain.util.TimeSource
 import com.photomode.domain.usecase.home.GetHomeDataUseCase
 import com.photomode.domain.usecase.home.SortLessonsByPriorityUseCase
 import com.photomode.domain.usecase.lesson.GetFundamentalsLessonsUseCase
@@ -42,11 +46,13 @@ val repositoryModule = module {
     single {
         get<PhotoModeDatabase>().completedLessonDao()
     }
+    single<LessonOfTheDayCache> { LessonOfTheDayCacheImpl(get()) }
+    single<TimeSource> { TimeSourceImpl() }
 }
 
 /** Use cases (factory). */
 val useCaseModule = module {
-    factory { GetLessonOfTheDayUseCase(get()) }
+    factory { GetLessonOfTheDayUseCase(get(), get()) }
     factory { GetFundamentalsLessonsUseCase(get()) }
     factory { GetScenariosLessonsUseCase(get()) }
     factory { GetLessonsByCategoryUseCase(get()) }
