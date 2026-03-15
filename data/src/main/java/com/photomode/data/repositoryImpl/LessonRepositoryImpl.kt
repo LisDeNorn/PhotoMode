@@ -9,13 +9,17 @@ import com.photomode.data.storage.LocalLessonStorage
 class LessonRepositoryImpl(
     private val context: Context
 ) : LessonRepository {
-    
-    private val storage = LocalLessonStorage()
 
-    /** Loads lessons from assets (data/src/main/assets/lessons.json). After edits: Build → Clean, then Run. */
+    private val storage = LocalLessonStorage()
+    private var cachedLessons: List<Lesson>? = null
+
+    /** Loads lessons from assets and caches them in memory. */
     private fun loadLessons(): List<Lesson> {
+        cachedLessons?.let { return it }
         val inputStream = context.assets.open("lessons.json")
-        return storage.loadLessonsFromAssets(inputStream)
+        val lessons = storage.loadLessonsFromAssets(inputStream)
+        cachedLessons = lessons
+        return lessons
     }
 
     override suspend fun getAllLessons(): List<Lesson> {
