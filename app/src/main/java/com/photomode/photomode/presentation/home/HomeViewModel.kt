@@ -3,6 +3,7 @@ package com.photomode.photomode.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.photomode.domain.usecase.home.GetHomeDataUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +18,14 @@ class HomeViewModel(
     private val getHomeDataUseCase: GetHomeDataUseCase
 ) : ViewModel() {
 
-    /** Triggers reload (pull-to-refresh / retry on error). Replays last so no drop when no collector. */
+    /** Signal to reload data manually. Does not replay old events. */
     private val refreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     /**
      * Single source of truth: load on first subscribe and on each refresh;
      * map to UI state, handle errors, expose as StateFlow for UI.
      */
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<HomeUiState> = merge(flowOf(Unit), refreshTrigger)
         .flatMapLatest { getHomeDataUseCase() }
         .map { homeData ->
