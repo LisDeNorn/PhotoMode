@@ -3,7 +3,7 @@ package com.photomode.domain.usecase.home
 import com.photomode.domain.model.Lesson
 import com.photomode.domain.model.LessonStatus
 import com.photomode.domain.model.Mission
-import com.photomode.domain.usecase.progress.IsLessonCompletedUseCase
+import com.photomode.domain.model.UserProgress
 
 /**
  * Use case for sorting lessons by display priority:
@@ -11,22 +11,20 @@ import com.photomode.domain.usecase.progress.IsLessonCompletedUseCase
  * 2. Not started (NOT_STARTED)
  * 3. Completed (COMPLETED)
  */
-class SortLessonsByPriorityUseCase(
-    private val isLessonCompletedUseCase: IsLessonCompletedUseCase
-) {
+class SortLessonsByPriorityUseCase {
     
     /**
      * Sorts lessons by priority and returns them with status.
      * @param lessons list of lessons to sort
      * @param currentMission current mission (for priority)
      */
-    suspend operator fun invoke(
+    operator fun invoke(
         lessons: List<Lesson>,
-        userProgress: com.photomode.domain.model.UserProgress, // Kept for API compatibility
+        userProgress: UserProgress,
         currentMission: Mission?
     ): List<LessonWithStatus> {
         return lessons.map { lesson ->
-            val status = determineStatus(lesson, currentMission)
+            val status = determineStatus(lesson, userProgress, currentMission)
             LessonWithStatus(lesson = lesson, status = status)
         }.sortedBy { lessonWithStatus ->
             when (lessonWithStatus.status) {
@@ -37,13 +35,14 @@ class SortLessonsByPriorityUseCase(
         }
     }
     
-    /** Determines lesson status from IsLessonCompletedUseCase and current mission. */
-    private suspend fun determineStatus(
+    /** Determines lesson status from [UserProgress] and current mission. */
+    private fun determineStatus(
         lesson: Lesson,
+        userProgress: UserProgress,
         currentMission: Mission?
     ): LessonStatus {
         return when {
-            isLessonCompletedUseCase(lesson.id) -> LessonStatus.COMPLETED
+            userProgress.completedLessonIds.contains(lesson.id) -> LessonStatus.COMPLETED
             
             // Not completed but required for mission
             currentMission?.requiredLessonIds?.contains(lesson.id) == true -> 
