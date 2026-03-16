@@ -24,6 +24,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestWatcher
@@ -49,9 +50,15 @@ class HomeViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
+    private lateinit var getHomeDataUseCase: GetHomeDataUseCase
+
+    @Before
+    fun setUp() {
+        getHomeDataUseCase = mockk()
+    }
+
     @Test
     fun state_hasLoadingTrue_initially() = runTest {
-        val getHomeDataUseCase: GetHomeDataUseCase = mockk()
         every { getHomeDataUseCase.invoke() } returns flowOf(sampleHomeData())
 
         val viewModel = HomeViewModel(getHomeDataUseCase)
@@ -63,7 +70,6 @@ class HomeViewModelTest {
     @Test
     fun state_emitsSuccess_whenFirstSubscribed() = runTest {
         val homeData = sampleHomeData()
-        val getHomeDataUseCase: GetHomeDataUseCase = mockk()
         every { getHomeDataUseCase.invoke() } returns flowOf(homeData)
 
         val viewModel = HomeViewModel(getHomeDataUseCase)
@@ -88,7 +94,6 @@ class HomeViewModelTest {
 
     @Test
     fun state_emitsError_whenUseCaseFails() = runTest {
-        val getHomeDataUseCase: GetHomeDataUseCase = mockk()
         every { getHomeDataUseCase.invoke() } returns flow {
             throw IllegalStateException("boom")
         }
@@ -113,7 +118,6 @@ class HomeViewModelTest {
         val first = sampleHomeData(lessonId = "first")
         val second = sampleHomeData(lessonId = "second")
 
-        val getHomeDataUseCase: GetHomeDataUseCase = mockk()
         every { getHomeDataUseCase.invoke() } returnsMany listOf(
             flowOf(first),
             flowOf(second)
@@ -139,7 +143,6 @@ class HomeViewModelTest {
     @Test
     fun onAction_nonRefreshActions_doNotChangeState() = runTest {
         val homeData = sampleHomeData()
-        val getHomeDataUseCase: GetHomeDataUseCase = mockk()
         every { getHomeDataUseCase.invoke() } returns flowOf(homeData)
 
         val viewModel = HomeViewModel(getHomeDataUseCase)
