@@ -306,7 +306,6 @@ private fun createPreviewHomeState(): HomeUiState {
         userProgress = userProgress,
         currentMission = mission,
         isLoading = false,
-        error = null,
-        progressPercentage = 45
+        error = null
     )
 }

@@ -12,6 +12,5 @@ data class HomeUiState(
     val userProgress: UserProgress = UserProgress(),
     val currentMission: Mission? = null,
     val isLoading: Boolean = false,
-    val error: String? = null,
-    val progressPercentage: Int = 0
+    val error: String? = null
 )

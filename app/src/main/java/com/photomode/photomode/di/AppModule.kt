@@ -20,7 +20,6 @@ import com.photomode.domain.usecase.lesson.GetLessonOfTheDayUseCase
 import com.photomode.domain.usecase.lesson.GetLessonsByCategoryUseCase
 import com.photomode.domain.usecase.lesson.GetScenariosLessonsUseCase
 import com.photomode.domain.usecase.mission.GetCurrentMissionUseCase
-import com.photomode.domain.usecase.progress.CalculateProgressPercentageUseCase
 import com.photomode.domain.usecase.progress.GetUserProgressFlowUseCase
 import com.photomode.domain.usecase.progress.GetUserProgressUseCase
 import com.photomode.domain.usecase.progress.IsLessonCompletedUseCase
@@ -60,7 +59,6 @@ val useCaseModule = module {
     factory { GetUserProgressUseCase(get()) }
     factory { GetUserProgressFlowUseCase(get()) }
     factory { MarkLessonCompletedUseCase(get()) }
-    factory { CalculateProgressPercentageUseCase() }
     factory { GetCurrentMissionUseCase(get()) }
     factory { IsLessonCompletedUseCase(get()) }
     factory { SortLessonsByPriorityUseCase(get()) }
@@ -78,7 +76,7 @@ val useCaseModule = module {
 
 /** ViewModels (scoped to lifecycle). */
 val viewModelModule = module {
-    viewModel { HomeViewModel(get(), get()) }
+    viewModel { HomeViewModel(get()) }
     viewModel { (category: com.photomode.domain.model.LessonCategory) ->
         LessonsListViewModel(get(), category)
     }
