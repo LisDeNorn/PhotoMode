@@ -12,7 +12,7 @@ import org.junit.Test
 
 /**
  * Unit tests for [GetLessonOfTheDayUseCase].
- * Uses [FakeLessonOfTheDayCache] and [FakeTimeSource] so behaviour is deterministic.
+ * Verifies lesson selection, caching for the current day, and stable results within the same day.
  */
 class GetLessonOfTheDayUseCaseTest {
 
