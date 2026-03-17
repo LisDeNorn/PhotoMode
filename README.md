@@ -1,5 +1,8 @@
 # PhotoMode
 
+[![CI](https://github.com/LisDeNorn/PhotoMode/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/LisDeNorn/PhotoMode/actions/workflows/ci.yml)  
+Coverage: [![app](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=app)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=app) [![domain](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=domain)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=domain) [![data](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=data)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=data)
+
 **Kotlin • Jetpack Compose • Clean Architecture • Koin • DataStore**
 
 A modular Android app for structured photography lessons — built with Jetpack Compose and a clear separation of UI, domain, and data.
@@ -98,6 +101,22 @@ UI state is held in ViewModels. Business logic is implemented in dedicated use c
 | Navigation  | Navigation Compose |
 | Persistence | DataStore (Preferences) |
 | Images      | Coil |
+
+---
+
+## CI & coverage
+
+- **Tests** run on every push and pull request to `main` / `master` via GitHub Actions.
+- **Coverage** is generated per module (`app`, `domain`, `data`) and uploaded to Codecov with flags.
+
+### Local run
+
+```bash
+./gradlew :app:testDebugUnitTest :domain:testDebugUnitTest :data:testDebugUnitTest
+./gradlew :app:createDebugUnitTestCoverageReport :domain:createDebugUnitTestCoverageReport :data:createDebugUnitTestCoverageReport
+```
+
+HTML reports: `app/build/reports/coverage/test/debug/index.html`, `domain/build/reports/coverage/test/debug/index.html`, `data/build/reports/coverage/test/debug/index.html`.
 
 ---
 
