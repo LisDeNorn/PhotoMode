@@ -1,0 +1,32 @@
+# Codecov: per-module coverage (Bespoke Flag Management)
+# https://docs.codecov.com/docs/flags
+
+# No coverage gates — only per-module flags and badges (CI won't fail on coverage)
+coverage:
+  status:
+    project:
+      default: off
+
+# Flags in PR comment and behaviour
+comment:
+  layout: "diff, flags, files"
+  behavior: default
+  require_changes: false
+  require_base: yes
+  require_head: yes
+  branches: null
+
+# Define each flag and which paths it covers (globs)
+flags:
+  app:
+    paths:
+      - app/
+    carryforward: true
+  domain:
+    paths:
+      - domain/
+    carryforward: true
+  data:
+    paths:
+      - data/
+    carryforward: true
