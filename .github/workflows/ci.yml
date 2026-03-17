@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: "temurin"
+          cache: "gradle"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run unit tests
+        run: ./gradlew :app:testDebugUnitTest :domain:testDebugUnitTest :data:testDebugUnitTest --no-daemon --no-build-cache
+
+      - name: Generate coverage reports
+        run: ./gradlew :app:createDebugUnitTestCoverageReport :domain:createDebugUnitTestCoverageReport :data:createDebugUnitTestCoverageReport --no-daemon
+
+      - name: Show generated coverage files
+        run: find . -path "*/build/reports/coverage/*" || true
+
+      - name: Upload app coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: LisDeNorn/PhotoMode
+          files: app/build/reports/coverage/test/debug/report.xml
+          flags: app
+          fail_ci_if_error: false
+
+      - name: Upload domain coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: LisDeNorn/PhotoMode
+          files: domain/build/reports/coverage/test/debug/report.xml
+          flags: domain
+          fail_ci_if_error: false
+
+      - name: Upload data coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: LisDeNorn/PhotoMode
+          files: data/build/reports/coverage/test/debug/report.xml
+          flags: data
+          fail_ci_if_error: false
+
+      - name: Upload coverage HTML reports
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: coverage-html-reports
+          path: |
+            app/build/reports/coverage/test/debug/
+            domain/build/reports/coverage/test/debug/
+            data/build/reports/coverage/test/debug/
