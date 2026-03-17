@@ -9,7 +9,7 @@ class MissionRepositoryImpl : MissionRepository {
     override suspend fun getCurrentMission(): Mission? {
         return Mission(
             id = "mission_1",
-            title = "Сфоткать любой ценой",
+            title = "Базовый минимум",
             requiredLessonIds = listOf(
                 "fundamentals_angle",
                 "scenarios_cafe_portrait"
