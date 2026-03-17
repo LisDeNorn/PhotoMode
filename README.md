@@ -1,7 +1,7 @@
 # PhotoMode
 
-[![CI](https://github.com/LisDeNorn/PhotoMode/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/LisDeNorn/PhotoMode/actions/workflows/ci.yml)  
-Coverage: [![app](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=app)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=app) [![domain](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=domain)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=domain) [![data](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=data)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=data)
+[![CI](https://github.com/LisDeNorn/PhotoMode/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/LisDeNorn/PhotoMode/actions/workflows/ci.yml)
+Coverage: **app** [![app](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=app)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=app) **domain** [![domain](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=domain)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=domain) **data** [![data](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=data)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=data)
 
 **Kotlin • Jetpack Compose • Clean Architecture • Koin • DataStore**
 
