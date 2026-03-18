@@ -1,10 +1,6 @@
 package com.photomode.photomode.presentation.navigation
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +9,7 @@ import androidx.navigation.navArgument
 import com.photomode.photomode.presentation.home.HomeRoute
 import com.photomode.photomode.presentation.lessonslist.LessonsListRoute
 import com.photomode.photomode.presentation.lessondetail.LessonDetailRoute
+import com.photomode.photomode.presentation.profile.ProfileRoute
 import com.photomode.domain.model.LessonCategory
 
 /** Centralized route definitions. */
@@ -72,11 +69,7 @@ fun NavigationGraph() {
         }
 
         composable(Routes.PROFILE) {
-            // TODO: Add ProfileRoute
-            Text(
-                text = "Profile Screen",
-                modifier = Modifier.padding(16.dp)
-            )
+            ProfileRoute(navController = navController)
         }
     }
 }

@@ -13,6 +13,15 @@
     <string name="menu">Меню</string>
     <string name="mission">Текущая миссия:</string>
     <string name="profile">Профиль</string>
+    <string name="profile_progress_title">Прогресс обучения</string>
+    <string name="profile_progress_summary">Завершено уроков: %1$d из %2$d (%3$d%%)</string>
+    <string name="profile_mission_title">Активная миссия</string>
+    <string name="profile_no_mission">Сейчас миссия не выбрана.</string>
+    <string name="profile_mission_progress">Прогресс по миссии: %1$d из %2$d уроков (%3$d%%)</string>
+    <string name="profile_continue_mission">Продолжить выполнение миссии</string>
+    <string name="profile_mission_complete">Все обязательные уроки по миссии уже завершены.</string>
+    <string name="profile_about_title">О проекте</string>
+    <string name="profile_about_body">PhotoMode помогает изучать мобильную фотографию через короткие структурированные уроки.</string>
     <string name="fundamental">База</string>
     <string name="scenarios">Сценарии</string>
     <string name="all_lessons">Все уроки</string>

@@ -26,6 +26,7 @@ import com.photomode.domain.usecase.progress.MarkLessonCompletedUseCase
 import com.photomode.photomode.presentation.home.HomeViewModel
 import com.photomode.photomode.presentation.lessondetail.LessonDetailViewModel
 import com.photomode.photomode.presentation.lessonslist.LessonsListViewModel
+import com.photomode.photomode.presentation.profile.ProfileViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -33,7 +34,7 @@ import org.koin.dsl.module
 val repositoryModule = module {
     single<LessonRepository> { LessonRepositoryImpl(get()) }
     single<ProgressRepository> { ProgressRepositoryImpl(get()) }
-    single<MissionRepository> { MissionRepositoryImpl() }
+    single<MissionRepository> { MissionRepositoryImpl(get()) }
     single {
         Room.databaseBuilder(
             get(),
@@ -84,6 +85,15 @@ val viewModelModule = module {
             getLessonByIdUseCase = get(),
             getUserProgressUseCase = get(),
             markLessonCompletedUseCase = get()
+        )
+    }
+    viewModel {
+        ProfileViewModel(
+            getFundamentalsLessonsUseCase = get(),
+            getScenariosLessonsUseCase = get(),
+            getUserProgressUseCase = get(),
+            getCurrentMissionUseCase = get(),
+            getLessonByIdUseCase = get()
         )
     }
 }
