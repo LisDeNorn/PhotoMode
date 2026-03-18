@@ -38,6 +38,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.datastore.core)
     testImplementation(libs.junit)
+    testImplementation(libs.org.json)
+    testImplementation(libs.kotlinx.coroutines.test)
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
