@@ -12,9 +12,16 @@ class MissionRepositoryImpl(
 
     private val storage = LocalMissionStorage()
 
+    /** Parsed mission from assets; read once per process like [LessonRepositoryImpl]. */
+    private var cachedMission: Mission? = null
+    private var missionLoaded: Boolean = false
+
     override suspend fun getCurrentMission(): Mission? {
+        if (missionLoaded) return cachedMission
         context.assets.open("missions.json").use { inputStream ->
-            return storage.loadCurrentMission(inputStream)
+            cachedMission = storage.loadCurrentMission(inputStream)
+            missionLoaded = true
+            return cachedMission
         }
     }
 }
