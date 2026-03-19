@@ -1,0 +1,10 @@
+{
+  "currentMission": {
+    "id": "mission_1",
+    "title": "Basic essentials",
+    "requiredLessonIds": [
+      "fundamentals_light",
+      "scenarios_cafe_portrait"
+    ]
+  }
+}

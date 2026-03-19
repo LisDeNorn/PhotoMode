@@ -11,6 +11,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
@@ -38,7 +39,7 @@ class ProfileViewModel(
 
     private fun loadProfile() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, error = null)
+            _state.update { it.copy(isLoading = true, error = null) }
 
             try {
                 val fundamentals = getFundamentalsLessonsUseCase(limit = Int.MAX_VALUE)
@@ -55,22 +56,27 @@ class ProfileViewModel(
                     ?.firstOrNull { lessonId -> lessonId !in userProgress.completedLessonIds }
                     ?.takeIf { lessonId -> getLessonByIdUseCase(lessonId) != null }
 
-                _state.value = ProfileUiState(
-                    completedLessons = userProgress.completedLessonIds.size,
-                    totalLessons = totalLessons,
-                    currentMission = currentMission,
-                    completedMissionLessons = completedMissionLessons,
-                    totalMissionLessons = currentMission?.requiredLessonIds?.size ?: 0,
-                    nextMissionLessonId = nextMissionLessonId,
-                    isLoading = false
-                )
+                _state.update {
+                    it.copy(
+                        completedLessons = userProgress.completedLessonIds.size,
+                        totalLessons = totalLessons,
+                        currentMission = currentMission,
+                        completedMissionLessons = completedMissionLessons,
+                        totalMissionLessons = currentMission?.requiredLessonIds?.size ?: 0,
+                        nextMissionLessonId = nextMissionLessonId,
+                        isLoading = false,
+                        error = null
+                    )
+                }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _state.value = ProfileUiState(
-                    isLoading = false,
-                    error = e.message ?: "Failed to load profile"
-                )
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: "Failed to load profile"
+                    )
+                }
             }
         }
     }

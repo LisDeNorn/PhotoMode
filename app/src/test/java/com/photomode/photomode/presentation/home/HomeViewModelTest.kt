@@ -6,6 +6,7 @@ import com.photomode.domain.model.LessonStatus
 import com.photomode.domain.model.Mission
 import com.photomode.domain.model.UserProgress
 import com.photomode.domain.usecase.home.GetHomeDataUseCase
+import com.photomode.domain.usecase.locale.SetAppLocaleUseCase
 import com.photomode.domain.usecase.home.HomeData
 import com.photomode.domain.usecase.home.LessonWithStatus
 import io.mockk.every
@@ -51,17 +52,19 @@ class HomeViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var getHomeDataUseCase: GetHomeDataUseCase
+    private lateinit var setAppLocaleUseCase: SetAppLocaleUseCase
 
     @Before
     fun setUp() {
         getHomeDataUseCase = mockk()
+        setAppLocaleUseCase = mockk(relaxed = true)
     }
 
     @Test
     fun state_hasLoadingTrue_initially() = runTest {
         every { getHomeDataUseCase.invoke() } returns flowOf(sampleHomeData())
 
-        val viewModel = HomeViewModel(getHomeDataUseCase)
+        val viewModel = HomeViewModel(getHomeDataUseCase, setAppLocaleUseCase)
 
         assertTrue(viewModel.state.value.isLoading)
         assertNull(viewModel.state.value.error)
@@ -72,7 +75,7 @@ class HomeViewModelTest {
         val homeData = sampleHomeData()
         every { getHomeDataUseCase.invoke() } returns flowOf(homeData)
 
-        val viewModel = HomeViewModel(getHomeDataUseCase)
+        val viewModel = HomeViewModel(getHomeDataUseCase, setAppLocaleUseCase)
 
         val job = backgroundScope.launch {
             viewModel.state.collect { }
@@ -98,7 +101,7 @@ class HomeViewModelTest {
             throw IllegalStateException("boom")
         }
 
-        val viewModel = HomeViewModel(getHomeDataUseCase)
+        val viewModel = HomeViewModel(getHomeDataUseCase, setAppLocaleUseCase)
 
         val job = backgroundScope.launch {
             viewModel.state.collect { }
@@ -123,7 +126,7 @@ class HomeViewModelTest {
             flowOf(second)
         )
 
-        val viewModel = HomeViewModel(getHomeDataUseCase)
+        val viewModel = HomeViewModel(getHomeDataUseCase, setAppLocaleUseCase)
 
         val job = backgroundScope.launch {
             viewModel.state.collect { }
@@ -145,7 +148,7 @@ class HomeViewModelTest {
         val homeData = sampleHomeData()
         every { getHomeDataUseCase.invoke() } returns flowOf(homeData)
 
-        val viewModel = HomeViewModel(getHomeDataUseCase)
+        val viewModel = HomeViewModel(getHomeDataUseCase, setAppLocaleUseCase)
 
         val job = backgroundScope.launch {
             viewModel.state.collect { }

@@ -1,30 +1,39 @@
 package com.photomode.data.repositoryImpl
 
 import android.content.Context
+import com.photomode.data.storage.LocalLessonStorage
+import com.photomode.domain.model.AppLocale
 import com.photomode.domain.model.Lesson
 import com.photomode.domain.model.LessonCategory
+import com.photomode.domain.repository.AppLocaleRepository
 import com.photomode.domain.repository.LessonRepository
-import com.photomode.data.storage.LocalLessonStorage
 
 class LessonRepositoryImpl(
-    private val context: Context
+    private val context: Context,
+    private val appLocaleRepository: AppLocaleRepository
 ) : LessonRepository {
 
     private val storage = LocalLessonStorage()
     private var cachedLessons: List<Lesson>? = null
+    private var cacheLocale: AppLocale? = null
 
-    /** Loads lessons from assets and caches them in memory. */
-    private fun loadLessons(): List<Lesson> {
-        cachedLessons?.let { return it }
-        val inputStream = context.assets.open("lessons.json")
+    private suspend fun loadLessons(): List<Lesson> {
+        val locale = appLocaleRepository.get()
+        if (cachedLessons != null && cacheLocale == locale) {
+            return cachedLessons!!
+        }
+        val assetName = when (locale) {
+            AppLocale.RUSSIAN -> "lessons_ru.json"
+            AppLocale.ENGLISH -> "lessons_en.json"
+        }
+        val inputStream = context.assets.open(assetName)
         val lessons = storage.loadLessonsFromAssets(inputStream)
         cachedLessons = lessons
+        cacheLocale = locale
         return lessons
     }
 
-    override suspend fun getAllLessons(): List<Lesson> {
-        return loadLessons()
-    }
+    override suspend fun getAllLessons(): List<Lesson> = loadLessons()
 
     override suspend fun getLessonsByCategory(category: LessonCategory): List<Lesson> {
         return loadLessons().filter { it.category == category }

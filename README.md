@@ -20,7 +20,7 @@ PhotoMode is a modular Android app built around structured lessons and missions:
 
 The app renders lessons from a typed step model (theory, instruction, and related variants) and applies mission and completion state when ordering and highlighting work on the home flow. That keeps navigation and screens stable while content and mission definitions change in assets.
 
-**Static content:** `lessons.json` and `missions.json` are parsed on first use and kept in memory for the app process (no repeated asset I/O on every screen). **User-specific state** is separate: lesson-of-the-day id is stored in DataStore, completed lessons in Room.
+**Static content:** localized pairs `lessons_ru.json` / `lessons_en.json` and `missions_ru.json` / `missions_en.json` are chosen from the user’s saved app language, parsed once per locale per process and cached in repositories. **User-specific state** is separate: lesson-of-the-day id is stored in DataStore, completed lessons in Room, app language in DataStore.
 
 Content is intentionally compact: the value shown here is the architecture, persistence boundaries, and how UI consumes immutable state—not the depth of editorial copy.
 
@@ -32,6 +32,7 @@ Content is intentionally compact: the value shown here is the architecture, pers
 - **Visual steps** — theory/instruction steps can show paired reference imagery (see lesson screenshot)
 - **Progress** — completed lessons stored locally via Room
 - **Profile** — active mission, progress summary, and navigation to the next required lesson
+- **Locales** — UI strings (`values` / `values-ru`) plus matching lesson/mission JSON; language (RU / EN only) from the home menu, persisted in DataStore and applied with AppCompat per-app locales; `GetHomeDataUseCase` recomputes home when language or progress changes
 
 ## Architecture
 
@@ -49,7 +50,7 @@ domain  -> models, repository contracts, use cases
 - Business rules live in use cases instead of screens
 - Repository abstractions separate domain logic from data sources
 - Lessons and missions are versioned as JSON assets; parsing and mapping stay in the data layer
-- Parsed lesson list and current mission are cached in memory after the first read (repositories mirror the same pattern)
+- Parsed lesson list and current mission are cached in memory per active `AppLocale` (switching language loads the other asset set)
 - Domain use cases and models avoid Android framework APIs
 
 ## Tech Stack
@@ -61,7 +62,7 @@ domain  -> models, repository contracts, use cases
 | Architecture | Clean Architecture, 3 Gradle modules |
 | DI | Koin |
 | Navigation | Navigation Compose, centralized route strings |
-| Persistence | **Room** — completed lessons · **DataStore Preferences** — lesson-of-the-day id · **In-memory** — parsed `lessons.json` / `missions.json` after first load |
+| Persistence | **Room** — completed lessons · **DataStore Preferences** — lesson-of-the-day id, app language · **In-memory** — parsed lessons/missions for current locale |
 | Images | Coil |
 | Testing | JUnit, MockK, coroutines test utilities |
 
@@ -106,8 +107,10 @@ Coverage reports are generated under:
 
 ## Content Configuration
 
-Lesson content is stored in:
-- `data/src/main/assets/lessons.json`
+Lesson content (same lesson ids in both files; text differs by language):
+- `data/src/main/assets/lessons_ru.json`
+- `data/src/main/assets/lessons_en.json`
 
-Mission configuration is stored in:
-- `data/src/main/assets/missions.json`
+Mission configuration:
+- `data/src/main/assets/missions_ru.json`
+- `data/src/main/assets/missions_en.json`

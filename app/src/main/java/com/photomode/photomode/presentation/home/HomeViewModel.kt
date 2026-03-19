@@ -3,7 +3,9 @@ package com.photomode.photomode.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.photomode.domain.usecase.home.GetHomeDataUseCase
+import com.photomode.domain.usecase.locale.SetAppLocaleUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -12,19 +14,20 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val getHomeDataUseCase: GetHomeDataUseCase
+    private val getHomeDataUseCase: GetHomeDataUseCase,
+    private val setAppLocaleUseCase: SetAppLocaleUseCase
 ) : ViewModel() {
 
-    /** Signal to reload data manually. Does not replay old events. */
     private val refreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    /**
-     * Single source of truth: load on first subscribe and on each refresh;
-     * map to UI state, handle errors, expose as StateFlow for UI.
-     */
+    private val _effects = Channel<HomeEffect>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<HomeUiState> = merge(flowOf(Unit), refreshTrigger)
         .flatMapLatest { getHomeDataUseCase() }
@@ -54,13 +57,18 @@ class HomeViewModel(
         )
 
     private companion object {
-        /** Cancel upstream when no subscribers for this duration (e.g. user left screen). */
         const val STOP_TIMEOUT_MS = 5_000L
     }
 
     fun onAction(action: HomeAction) {
         when (action) {
             HomeAction.RefreshData -> refreshTrigger.tryEmit(Unit)
+            is HomeAction.SetAppLocale -> {
+                viewModelScope.launch {
+                    setAppLocaleUseCase(action.locale)
+                    _effects.send(HomeEffect.ApplyAppLocale(action.locale))
+                }
+            }
             is HomeAction.OnLessonClick,
             HomeAction.OnFundamentalsClick,
             HomeAction.OnScenariosClick,

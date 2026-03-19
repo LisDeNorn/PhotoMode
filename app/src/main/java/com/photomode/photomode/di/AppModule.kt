@@ -1,17 +1,22 @@
 package com.photomode.photomode.di
 
 import androidx.room.Room
+import com.photomode.data.local.AppLocaleRepositoryImpl
 import com.photomode.data.local.LessonOfTheDayCacheImpl
 import com.photomode.data.local.db.PhotoModeDatabase
 import com.photomode.data.repositoryImpl.LessonRepositoryImpl
 import com.photomode.data.util.TimeSourceImpl
 import com.photomode.data.repositoryImpl.MissionRepositoryImpl
 import com.photomode.data.repositoryImpl.ProgressRepositoryImpl
+import com.photomode.domain.repository.AppLocaleRepository
 import com.photomode.domain.repository.LessonOfTheDayCache
 import com.photomode.domain.repository.LessonRepository
 import com.photomode.domain.repository.MissionRepository
 import com.photomode.domain.repository.ProgressRepository
 import com.photomode.domain.util.TimeSource
+import com.photomode.domain.usecase.locale.GetAppLocaleUseCase
+import com.photomode.domain.usecase.locale.ObserveAppLocaleUseCase
+import com.photomode.domain.usecase.locale.SetAppLocaleUseCase
 import com.photomode.domain.usecase.home.GetHomeDataUseCase
 import com.photomode.domain.usecase.home.SortLessonsByPriorityUseCase
 import com.photomode.domain.usecase.lesson.GetFundamentalsLessonsUseCase
@@ -32,9 +37,10 @@ import org.koin.dsl.module
 
 /** Repositories (singleton). */
 val repositoryModule = module {
-    single<LessonRepository> { LessonRepositoryImpl(get()) }
+    single<LessonRepository> { LessonRepositoryImpl(get(), get()) }
     single<ProgressRepository> { ProgressRepositoryImpl(get()) }
-    single<MissionRepository> { MissionRepositoryImpl(get()) }
+    single<MissionRepository> { MissionRepositoryImpl(get(), get()) }
+    single<AppLocaleRepository> { AppLocaleRepositoryImpl(get()) }
     single {
         Room.databaseBuilder(
             get(),
@@ -60,6 +66,9 @@ val useCaseModule = module {
     factory { GetUserProgressFlowUseCase(get()) }
     factory { MarkLessonCompletedUseCase(get()) }
     factory { GetCurrentMissionUseCase(get()) }
+    factory { GetAppLocaleUseCase(get()) }
+    factory { ObserveAppLocaleUseCase(get()) }
+    factory { SetAppLocaleUseCase(get()) }
     factory { SortLessonsByPriorityUseCase() }
     factory {
         GetHomeDataUseCase(
@@ -68,14 +77,15 @@ val useCaseModule = module {
             getScenariosLessonsUseCase = get(),
             getCurrentMissionUseCase = get(),
             sortLessonsByPriorityUseCase = get(),
-            getUserProgressFlowUseCase = get()
+            getUserProgressFlowUseCase = get(),
+            observeAppLocaleUseCase = get()
         )
     }
 }
 
 /** ViewModels (scoped to lifecycle). */
 val viewModelModule = module {
-    viewModel { HomeViewModel(get()) }
+    viewModel { HomeViewModel(get(), get()) }
     viewModel { (category: com.photomode.domain.model.LessonCategory) ->
         LessonsListViewModel(get(), category)
     }

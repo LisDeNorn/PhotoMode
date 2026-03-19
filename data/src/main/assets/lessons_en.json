@@ -1,0 +1,134 @@
+{
+  "lessons": [
+    {
+      "id": "fundamentals_light",
+      "title": "Light",
+      "category": "FUNDAMENTALS",
+      "shortDescription": "How to find good light in 30 seconds",
+      "thumbnailImage": "fundamentals_light_thumb.webp",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Hard vs Soft light",
+          "description": "Hard light creates harsh shadows under the eyes and nose; the face looks tired.\n\nSoft light keeps shadows gentle and skin looks better. For people, almost always choose soft light.",
+          "goodExampleImage": "images/lessons/fundamentals_light/soft_light_good.webp",
+          "badExampleImage": "images/lessons/fundamentals_light/hard_light_bad.webp",
+          "goodExampleLabel": "✅ Soft light",
+          "badExampleLabel": "❌ Hard light"
+        },
+        {
+          "type": "THEORY",
+          "title": "Where light should come from",
+          "description": "The best light is in front of the face and slightly from the side. Light from above or behind makes the face dark and flat.",
+          "goodExampleImage": "images/lessons/fundamentals_light/light_position_good.webp",
+          "badExampleImage": "images/lessons/fundamentals_light/light_position_bad.webp",
+          "goodExampleLabel": "✅ Light from the front",
+          "badExampleLabel": "❌ Light from above"
+        },
+        {
+          "type": "INSTRUCTION",
+          "title": "Where to look for good light",
+          "text": "Find a spot where the face is brighter than the background. Usually:\n• near a window or storefront\n• in building shade, facing open sky\n\nAvoid places where light is above or behind you—under lamps or in direct sun on the back of the head.",
+          "exampleImage": "images/lessons/fundamentals_light/light_where_to_shoot.webp",
+          "exampleImageLabel": "Face the light—that’s how you pick the spot"
+        }
+      ]
+    },
+    {
+      "id": "fundamentals_horizon",
+      "title": "Horizon",
+      "category": "FUNDAMENTALS",
+      "shortDescription": "How to keep the horizon straight",
+      "thumbnailImage": "horizon_thumb.webp",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Why the horizon should be level",
+          "description": "A tilted horizon is one of the most common mistakes.\nWe rarely notice a small tilt while shooting, but in the photo it stands out immediately.",
+          "goodExampleImage": "images/lessons/fundamentals_horizon/horizon_good.webp",
+          "badExampleImage": "images/lessons/fundamentals_horizon/horizon_bad.webp",
+          "goodExampleLabel": "✅ Level horizon",
+          "badExampleLabel": "❌ Tilted horizon"
+        },
+        {
+          "type": "INSTRUCTION",
+          "title": "Level the horizon with the grid",
+          "text": "Turn on the camera grid.\n\nBefore you shoot, align the horizon with a grid line.\nIf you can’t see the horizon, use buildings, poles, or walls—they should look vertical.",
+          "exampleImage": "images/lessons/fundamentals_horizon/horizon_instruction.webp"
+        }
+      ]
+    },
+    {
+      "id": "fundamentals_frame",
+      "title": "Framing",
+      "category": "FUNDAMENTALS",
+      "shortDescription": "How to frame a photo cleanly",
+      "thumbnailImage": "frame_thumb.webp",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "What a good frame means",
+          "description": "A good frame has everything important in it and nothing distracting. The subject should be the clear focus.",
+          "goodExampleImage": "images/lessons/fundamentals_frame/frame_good.webp",
+          "badExampleImage": "images/lessons/fundamentals_frame/frame_bad.webp",
+          "goodExampleLabel": "✅ Good framing",
+          "badExampleLabel": "❌ Cluttered frame"
+        },
+        {
+          "type": "INSTRUCTION",
+          "title": "Framing and a clean frame",
+          "text": "Move closer or use zoom. Remove clutter—trash, random people, objects that don’t belong in the story.",
+          "exampleImage": "images/lessons/fundamentals_frame/frame_instruction.webp"
+        }
+      ]
+    },
+    {
+      "id": "scenarios_cafe_portrait",
+      "title": "Café portrait",
+      "category": "SCENARIOS",
+      "shortDescription": "How to photograph someone in a café",
+      "thumbnailImage": "cafe_portrait_thumb.webp",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "Why cafés work well for portraits",
+          "description": "Cafés usually have nice light and a pleasant background. It’s a great setting for a portrait.",
+          "goodExampleImage": "images/lessons/scenarios_cafe_portrait/cafe_good.webp",
+          "badExampleImage": "images/lessons/scenarios_cafe_portrait/cafe_bad.webp",
+          "goodExampleLabel": "✅ Strong shot",
+          "badExampleLabel": "❌ Weak shot"
+        },
+        {
+          "type": "INSTRUCTION",
+          "title": "Shooting a café portrait",
+          "text": "Seat the person by the window so light falls on the face. Use the café as background—coffee, desserts. Hold the phone at eye level.",
+          "exampleImage": "images/lessons/scenarios_cafe_portrait/cafe_instruction.webp"
+        }
+      ]
+    },
+    {
+      "id": "scenarios_group_photo",
+      "title": "Group photo",
+      "category": "SCENARIOS",
+      "shortDescription": "How to photograph several people",
+      "thumbnailImage": "group_photo_thumb.webp",
+      "steps": [
+        {
+          "type": "THEORY",
+          "title": "How to make a good group photo",
+          "description": "Everyone should be visible and in focus. Nobody should be awkwardly cropped out.",
+          "goodExampleImage": "images/lessons/scenarios_group_photo/group_good.webp",
+          "badExampleImage": "images/lessons/scenarios_group_photo/group_bad.webp",
+          "goodExampleLabel": "✅ Good group shot",
+          "badExampleLabel": "❌ Poor group shot"
+        },
+        {
+          "type": "INSTRUCTION",
+          "title": "How to arrange the group",
+          "text": "Step back so everyone fits. Ask people to stand in one row or two (taller people in the back). Make sure every face is visible.",
+          "exampleImage": "images/lessons/scenarios_group_photo/group_instruction.webp"
+        }
+      ]
+    }
+  ]
+}

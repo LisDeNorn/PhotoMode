@@ -184,7 +184,7 @@ private fun LessonDetailScreenStep2Preview() {
 private fun loadLightLessonFromAssets(context: Context): Lesson? {
     return try {
         val storage = LocalLessonStorage()
-        val inputStream = context.assets.open("lessons.json")
+        val inputStream = context.assets.open("lessons_ru.json")
         val lessons = storage.loadLessonsFromAssets(inputStream)
 
         val lightLesson = lessons.find { it.id == "fundamentals_light" }

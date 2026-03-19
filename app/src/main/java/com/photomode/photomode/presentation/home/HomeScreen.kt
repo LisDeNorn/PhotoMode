@@ -59,7 +59,8 @@ fun HomeScreen(
         topBar = {
             TopBar(
                 currentMission = state.currentMission,
-                onProfileClick = { onAction(HomeAction.OnProfileClick) }
+                onProfileClick = { onAction(HomeAction.OnProfileClick) },
+                onSelectLocale = { onAction(HomeAction.SetAppLocale(it)) }
             )
         }
     ) { paddingValues ->
