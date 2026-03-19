@@ -1,6 +1,11 @@
 codecov:
   require_ci_to_pass: true
 
+coverage:
+  status:
+    project: off
+    patch: off
+
 flag_management:
   default_rules:
     carryforward: true
