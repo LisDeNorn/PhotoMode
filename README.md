@@ -6,144 +6,108 @@
 |---|:---:|:---:|:---:|
 | **Coverage** | [![app](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=app)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=app) | [![domain](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=domain)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=domain) | [![data](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=data)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=data) |
 
-**Kotlin • Jetpack Compose • Clean Architecture • Koin • DataStore**
+**Kotlin • Jetpack Compose • Clean Architecture • Koin • Room • DataStore**
 
-A modular Android app for structured photography lessons — built with Jetpack Compose and a clear separation of UI, domain, and data.
+PhotoMode is a modular Android app built around structured lessons and missions: asset-driven content, mission-aware lists, and local progress, with a Compose UI driven by ViewModels and use cases. The emphasis is on a clear content model and data layer—lessons and missions ship as JSON and can evolve without rewriting presentation logic.
 
-Each lesson follows a step-based learning flow: **Theory → Instruction → Practice**. Users see visual examples, receive simple shooting instructions, and get a practice task (coming soon). Progress is saved locally. The codebase is structured for readability and maintainability: single-responsibility use cases, repository abstractions, and state-driven Compose UI.
+## Screenshots
 
----
-
-## Product Vision
-
-This project aims to teach mobile photography through short, visual, and practical lessons.
-
-Instead of long tutorials, each lesson focuses on a single concept and follows a structured flow:
-
-Theory → Instruction → Practice
-
-Users first see visual examples, then receive simple shooting instructions, and finally get a practice task (coming soon).
-
-The goal is to make photography learning fast, practical, and accessible directly from a mobile device.
-
----
-
-## What this project demonstrates
-
-- **Clean Architecture** — `domain` (models, contracts, use cases), `data` (repos, storage, assets), `app` (Compose, ViewModels, navigation)
-- **Modern Android** — Kotlin, Jetpack Compose, Material 3, Navigation Compose
-- **State & DI** — Unidirectional data flow, Koin for dependency injection
-- **Persistence** — DataStore for progress; lesson content from JSON assets
-- **Reusable UI** — Composable step cards (theory, instruction, practice), shared components
-
----
+| Home | Lesson |
+|---|---|
+| ![](screenshots/home.png) | ![](screenshots/lesson.png) |
 
 ## Overview
 
-The app teaches photography basics: light, horizon, angle, framing, and real-world scenarios (e.g. cafe portrait, group photo). Users move through steps, see good vs bad examples, and complete lessons; progress is saved locally.
+The app renders lessons from a typed step model (theory, instruction, and related variants) and applies mission and completion state when ordering and highlighting work on the home flow. That keeps navigation and screens stable while content and mission definitions change in assets.
 
-| Home Screen | Lesson Screen |
-|-------------|---------------|
-| ![](screenshots/home.png) | ![](screenshots/lesson.png) |
+**Static content:** `lessons.json` and `missions.json` are parsed on first use and kept in memory for the app process (no repeated asset I/O on every screen). **User-specific state** is separate: lesson-of-the-day id is stored in DataStore, completed lessons in Room.
 
-_Screenshots from the running application._
+Content is intentionally compact: the value shown here is the architecture, persistence boundaries, and how UI consumes immutable state—not the depth of editorial copy.
 
----
+## Key Features
 
-## Features
-
-- Step-based lesson engine (Theory / Instruction / Practice)
-- Interactive image comparison (tap to reveal labels, auto-dismiss)
-- Lesson of the day + categories (Fundamentals, Scenarios)
-- Priority-based lesson sorting based on mission and completion state
-- Local progress persistence (DataStore)
-- Current mission in the app bar
-
----
+- **Lesson of the day** — deterministic per-calendar-day choice, persisted so it stays stable until midnight
+- **Content model** — fundamentals vs scenario-style categories; steps mapped to composables from data, not hard-coded screens
+- **Mission-aware ordering** — home and lists prioritize work tied to the active mission and completion state
+- **Visual steps** — theory/instruction steps can show paired reference imagery (see lesson screenshot)
+- **Progress** — completed lessons stored locally via Room
+- **Profile** — active mission, progress summary, and navigation to the next required lesson
 
 ## Architecture
 
-### Architecture layers
+### Modules
 
-```
-app (presentation)
-   ↓
-data (repositories, storage)
-   ↓
-domain (models, use cases)
+```text
+app     -> presentation: Compose UI, navigation, ViewModels, DI (Koin)
+data    -> repositories, JSON parsing, in-memory parsed catalog (lessons + mission), Room, DataStore
+domain  -> models, repository contracts, use cases
 ```
 
-The domain layer is pure Kotlin and does not depend on Android APIs, which keeps business logic isolated and testable.
+### Design decisions
 
-**Module layout:**
+- UI state is owned by ViewModels and exposed as immutable state
+- Business rules live in use cases instead of screens
+- Repository abstractions separate domain logic from data sources
+- Lessons and missions are versioned as JSON assets; parsing and mapping stay in the data layer
+- Parsed lesson list and current mission are cached in memory after the first read (repositories mirror the same pattern)
+- Domain use cases and models avoid Android framework APIs
 
-```
-PhotoMode/
-├── app/        Compose UI, ViewModels, navigation, Koin module
-├── data/       Repository implementations, DataStore, LocalLessonStorage, lessons.json
-├── domain/     Models, repository interfaces, use cases
-└── screenshots/
-```
+## Tech Stack
 
-- **domain** — No Android dependencies. Defines `Lesson`, `LessonStep`, repository contracts, and use cases.
-- **data** — Implements repositories, parses `lessons.json`, persists progress with DataStore.
-- **app** — Compose screens, ViewModels (state + events), single Activity, Koin DI.
+| Layer | Choice |
+|---|---|
+| Language | Kotlin |
+| UI | Jetpack Compose, Material 3 |
+| Architecture | Clean Architecture, 3 Gradle modules |
+| DI | Koin |
+| Navigation | Navigation Compose, centralized route strings |
+| Persistence | **Room** — completed lessons · **DataStore Preferences** — lesson-of-the-day id · **In-memory** — parsed `lessons.json` / `missions.json` after first load |
+| Images | Coil |
+| Testing | JUnit, MockK, coroutines test utilities |
 
-UI state is held in ViewModels. Business logic is implemented in dedicated use cases rather than inside ViewModels. Composables are stateless and receive data + callbacks. Navigation is type-safe via routes and arguments.
+## Testing and CI
 
----
+- Unit tests are configured for `app`, `domain`, and `data` modules
+- GitHub Actions runs tests on push and pull request
+- Coverage reports are generated per module and uploaded to Codecov
 
-## Tech stack
-
-| Layer        | Choice |
-|-------------|--------|
-| Language    | Kotlin |
-| UI          | Jetpack Compose, Material 3 |
-| Architecture| Clean Architecture (3 modules) |
-| DI          | Koin |
-| Navigation  | Navigation Compose |
-| Persistence | DataStore (Preferences) |
-| Images      | Coil |
-
----
-
-## CI & coverage
-
-- **Tests** run on every push and pull request to `main` / `master` via GitHub Actions.
-- **Coverage** is generated per module (`app`, `domain`, `data`) and uploaded to Codecov with flags.
-
-### Local run
+### Local commands
 
 ```bash
 ./gradlew :app:testDebugUnitTest :domain:testDebugUnitTest :data:testDebugUnitTest
 ./gradlew :app:createDebugUnitTestCoverageReport :domain:createDebugUnitTestCoverageReport :data:createDebugUnitTestCoverageReport
 ```
 
-HTML reports: `app/build/reports/coverage/test/debug/index.html`, `domain/build/reports/coverage/test/debug/index.html`, `data/build/reports/coverage/test/debug/index.html`.
+Coverage reports are generated under:
 
----
+- `app/build/reports/coverage/test/debug/`
+- `domain/build/reports/coverage/test/debug/`
+- `data/build/reports/coverage/test/debug/`
 
 ## Running the project
 
-**Requirements:** Android Studio (latest stable), JDK 11+, minSdk 24.
+**Requirements**
+- Android Studio
+- JDK 11+
+- minSdk 24
 
-1. Clone and open:
-   ```bash
-   git clone https://github.com/<your-username>/PhotoMode.git
-   cd PhotoMode
-   ```
-   Open the project in Android Studio and sync Gradle.
+### Run locally
 
-2. Run on a device or emulator (Run → Run 'app').
+1. Clone the repository
+2. Open the project in Android Studio
+3. Sync Gradle
+4. Run the `app` configuration on an emulator or device
 
-**Build debug APK from terminal:**
+### Build APK
 
 ```bash
 ./gradlew assembleDebug
 ```
 
-Output: `app/build/outputs/apk/debug/app-debug.apk`. You can upload this to GitHub Releases so others can install without building.
+## Content Configuration
 
----
+Lesson content is stored in:
+- `data/src/main/assets/lessons.json`
 
-Lesson content is defined in `data/src/main/assets/lessons.json`. All lesson images live in the **data** module: `data/src/main/assets/images/thumbnails/` for previews; `data/src/main/assets/images/lessons/<lesson_id>/` for step images (one folder per lesson). After editing: **Build → Clean Project**, then run the app again.
+Mission configuration is stored in:
+- `data/src/main/assets/missions.json`
