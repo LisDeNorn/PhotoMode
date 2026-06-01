@@ -6,9 +6,9 @@
 |---|:---:|:---:|:---:|
 | **Coverage** | [![app](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=app)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=app) | [![domain](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=domain)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=domain) | [![data](https://codecov.io/gh/LisDeNorn/PhotoMode/graph/badge.svg?flag=data)](https://codecov.io/gh/LisDeNorn/PhotoMode?flag=data) |
 
-**Kotlin • Jetpack Compose • Clean Architecture • Koin • Room • DataStore**
+**Kotlin • Jetpack Compose • Clean Architecture • Koin • Ktor Client • Room • DataStore**
 
-PhotoMode is a modular Android app built around structured lessons and missions: asset-driven content, mission-aware lists, and local progress, with a Compose UI driven by ViewModels and use cases. The emphasis is on a clear content model and data layer—lessons and missions ship as JSON and can evolve without rewriting presentation logic.
+PhotoMode is a modular Android app built around structured lessons and missions: offline-capable content delivery, mission-aware lists, and local progress, with a Compose UI driven by ViewModels and use cases. Lessons and missions are stored as JSON, can be updated from a remote source, and remain available offline through a local cache and bundled asset fallback.
 
 ## Screenshots
 
@@ -20,7 +20,9 @@ PhotoMode is a modular Android app built around structured lessons and missions:
 
 The app renders lessons from a typed step model (theory, instruction, and related variants) and applies mission and completion state when ordering and highlighting work on the home flow. That keeps navigation and screens stable while content and mission definitions change in assets.
 
-**Static content:** localized pairs `lessons_ru.json` / `lessons_en.json` and `missions_ru.json` / `missions_en.json` are chosen from the user’s saved app language, parsed once per locale per process and cached in repositories. **User-specific state** is separate: lesson-of-the-day id is stored in DataStore, completed lessons in Room, app language in DataStore.
+**Content delivery:** localized pairs `lessons_ru.json` / `lessons_en.json` and `missions_ru.json` / `missions_en.json` ship with the app as bundled assets and are used as a fallback. The app can manually synchronize fresh lesson and mission JSON from a remote source using Ktor Client, validate the downloaded content, and store it in a local file cache. Repositories read from the local content source first and fall back to bundled assets when no downloaded content is available.
+
+**User-specific state** is separate: lesson-of-the-day id is stored in DataStore, completed lessons in Room, and app language in DataStore.
 
 Content is intentionally compact: the value shown here is the architecture, persistence boundaries, and how UI consumes immutable state—not the depth of editorial copy.
 
@@ -28,11 +30,12 @@ Content is intentionally compact: the value shown here is the architecture, pers
 
 - **Lesson of the day** — deterministic per-calendar-day choice, persisted so it stays stable until midnight
 - **Content model** — fundamentals vs scenario-style categories; steps mapped to composables from data, not hard-coded screens
+- **Remote content sync** — lessons and missions can be manually updated from remote JSON via Ktor Client, validated, cached locally, and served offline with bundled asset fallback
 - **Mission-aware ordering** — home and lists prioritize work tied to the active mission and completion state
 - **Visual steps** — theory/instruction steps can show paired reference imagery (see lesson screenshot)
 - **Progress** — completed lessons stored locally via Room
 - **Profile** — active mission, progress summary, and navigation to the next required lesson
-- **Locales** — UI strings (`values` / `values-ru`) plus matching lesson/mission JSON; language (RU / EN only) from the home menu, persisted in DataStore and applied with AppCompat per-app locales; `GetHomeDataUseCase` recomputes home when language or progress changes
+- **Locales** — UI strings (`values` / `values-ru`) plus matching lesson/mission JSON; language (RU / EN only) is persisted in DataStore and controls both bundled and remote content selection
 
 ## Architecture
 
@@ -40,7 +43,7 @@ Content is intentionally compact: the value shown here is the architecture, pers
 
 ```text
 app     -> presentation: Compose UI, navigation, ViewModels, DI (Koin)
-data    -> repositories, JSON parsing, in-memory parsed catalog (lessons + mission), Room, DataStore
+data    -> repositories, local/remote content sources, JSON parsing, file cache, in-memory parsed cache, Room, DataStore
 domain  -> models, repository contracts, use cases
 ```
 
@@ -49,8 +52,10 @@ domain  -> models, repository contracts, use cases
 - UI state is owned by ViewModels and exposed as immutable state
 - Business rules live in use cases instead of screens
 - Repository abstractions separate domain logic from data sources
-- Lessons and missions are versioned as JSON assets; parsing and mapping stay in the data layer
-- Parsed lesson list and current mission are cached in memory per active `AppLocale` (switching language loads the other asset set)
+- Lessons and missions are modeled as localized JSON content; parsing, validation, and mapping stay in the data layer
+- Remote content synchronization is separated from content reading: repositories read local cached JSON or bundled assets, while `SyncContentUseCase` updates the local cache from the remote source
+- Downloaded content is validated before replacing the local cache, so invalid remote JSON does not break the offline experience
+- Parsed lessons and current mission are cached in memory per active `AppLocale`; successful content sync invalidates this cache so repositories reload updated JSON from the local file cache
 - Domain use cases and models avoid Android framework APIs
 
 ## Tech Stack
@@ -62,7 +67,8 @@ domain  -> models, repository contracts, use cases
 | Architecture | Clean Architecture, 3 Gradle modules |
 | DI | Koin |
 | Navigation | Navigation Compose, centralized route strings |
-| Persistence | **Room** — completed lessons · **DataStore Preferences** — lesson-of-the-day id, app language · **In-memory** — parsed lessons/missions for current locale |
+| Networking | Ktor Client, OkHttp engine |
+| Persistence | **Room** — completed lessons · **DataStore Preferences** — lesson-of-the-day id, app language · **File cache** — downloaded lesson/mission JSON · **Assets** — bundled fallback content · **In-memory** — parsed lessons/missions for current locale |
 | Images | Coil |
 | Testing | JUnit, MockK, coroutines test utilities |
 
@@ -107,10 +113,14 @@ Coverage reports are generated under:
 
 ## Content Configuration
 
-Lesson content (same lesson ids in both files; text differs by language):
+Bundled fallback content:
 - `data/src/main/assets/lessons_ru.json`
 - `data/src/main/assets/lessons_en.json`
-
-Mission configuration:
 - `data/src/main/assets/missions_ru.json`
 - `data/src/main/assets/missions_en.json`
+
+Remote content sync:
+- `GistContentRemoteDataSource` downloads localized lesson and mission JSON from remote raw URLs using Ktor Client
+- `ContentSyncRepositoryImpl` validates downloaded JSON before saving it
+- `ContentLocalDataSource` stores downloaded content in the app’s internal `files/content_cache/` directory
+- If downloaded content is unavailable, the app falls back to bundled assets

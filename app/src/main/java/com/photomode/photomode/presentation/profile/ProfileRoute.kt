@@ -25,6 +25,7 @@ fun ProfileRoute(
                         navController.navigate(Routes.lessonDetail(lessonId))
                     }
                 }
+                ProfileAction.OnUpdateContentClick -> viewModel.onAction(action)
             }
         }
     )

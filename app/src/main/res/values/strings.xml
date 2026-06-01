@@ -31,4 +31,6 @@
     <string name="lesson_of_the_day">Lesson of the day</string>
     <string name="lessons">Lessons</string>
     <string name="back">Back</string>
+    <string name="update_content">Download</string>
+    <string name="update_content_title">Update Content</string>
 </resources>

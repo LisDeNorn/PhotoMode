@@ -114,6 +114,12 @@ fun ProfileScreen(
                         body = stringResource(R.string.profile_about_body)
                     )
                 }
+
+                item {
+                    UpdateContentCard(
+                        onUpdateContentClick = { onAction(ProfileAction.OnUpdateContentClick) }
+                    )
+                }
             }
         }
     }
@@ -199,6 +205,34 @@ private fun HighlightCard(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
+    }
+}
+
+@Composable
+fun UpdateContentCard(
+    onUpdateContentClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.update_content_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Button(
+                onClick = onUpdateContentClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(R.string.update_content))
+            }
         }
     }
 }

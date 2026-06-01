@@ -8,18 +8,21 @@ import org.json.JSONObject
 import java.io.InputStream
 
 class LocalLessonStorage {
-    
     fun loadLessonsFromAssets(inputStream: InputStream): List<Lesson> {
         val jsonString = inputStream.bufferedReader().use { it.readText() }
+        return loadLessonsFromJson(jsonString)
+    }
+
+    fun loadLessonsFromJson(jsonString: String): List<Lesson> {
         val jsonObject = JSONObject(jsonString)
         val lessonsArray = jsonObject.getJSONArray("lessons")
-        
+
         val lessons = mutableListOf<Lesson>()
         for (i in 0 until lessonsArray.length()) {
             val lessonJson = lessonsArray.getJSONObject(i)
             lessons.add(parseLesson(lessonJson))
         }
-        
+
         return lessons
     }
     

@@ -8,6 +8,10 @@ class LocalMissionStorage {
 
     fun loadCurrentMission(inputStream: InputStream): Mission? {
         val jsonString = inputStream.bufferedReader().use { it.readText() }
+        return loadCurrentMissionFromJson(jsonString)
+    }
+
+    fun loadCurrentMissionFromJson(jsonString: String): Mission? {
         val jsonObject = JSONObject(jsonString)
         val missionJson = jsonObject.optJSONObject("currentMission") ?: return null
 

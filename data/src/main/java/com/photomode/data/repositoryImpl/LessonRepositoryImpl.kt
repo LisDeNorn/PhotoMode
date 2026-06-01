@@ -1,6 +1,7 @@
 package com.photomode.data.repositoryImpl
 
-import android.content.Context
+import com.photomode.data.content.ContentCacheInvalidator
+import com.photomode.data.content.ContentLocalDataSource
 import com.photomode.data.storage.LocalLessonStorage
 import com.photomode.domain.model.AppLocale
 import com.photomode.domain.model.Lesson
@@ -9,28 +10,33 @@ import com.photomode.domain.repository.AppLocaleRepository
 import com.photomode.domain.repository.LessonRepository
 
 class LessonRepositoryImpl(
-    private val context: Context,
-    private val appLocaleRepository: AppLocaleRepository
-) : LessonRepository {
+    private val appLocaleRepository: AppLocaleRepository,
+    private val contentLocalDataSource: ContentLocalDataSource,
+    private val storage: LocalLessonStorage
+) : LessonRepository, ContentCacheInvalidator {
 
-    private val storage = LocalLessonStorage()
     private var cachedLessons: List<Lesson>? = null
     private var cacheLocale: AppLocale? = null
 
     private suspend fun loadLessons(): List<Lesson> {
         val locale = appLocaleRepository.get()
+
         if (cachedLessons != null && cacheLocale == locale) {
             return cachedLessons!!
         }
-        val assetName = when (locale) {
-            AppLocale.RUSSIAN -> "lessons_ru.json"
-            AppLocale.ENGLISH -> "lessons_en.json"
-        }
-        val inputStream = context.assets.open(assetName)
-        val lessons = storage.loadLessonsFromAssets(inputStream)
+
+        val json = contentLocalDataSource.getLessonsJson(locale)
+        val lessons = storage.loadLessonsFromJson(json)
+
         cachedLessons = lessons
         cacheLocale = locale
+
         return lessons
+    }
+
+    override fun clearContentCache() {
+        cachedLessons = null
+        cacheLocale = null
     }
 
     override suspend fun getAllLessons(): List<Lesson> = loadLessons()

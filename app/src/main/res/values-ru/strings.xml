@@ -31,4 +31,6 @@
     <string name="lesson_of_the_day">Урок дня</string>
     <string name="lessons">Уроки</string>
     <string name="back">Назад</string>
+    <string name="update_content">Загрузить</string>
+    <string name="update_content_title">Обновить уроки</string>
 </resources>
