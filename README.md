@@ -124,3 +124,9 @@ Remote content sync:
 - `ContentSyncRepositoryImpl` validates downloaded JSON before saving it
 - `ContentLocalDataSource` stores downloaded content in the app’s internal `files/content_cache/` directory
 - If downloaded content is unavailable, the app falls back to bundled assets
+
+## Project Management
+
+The project backlog and roadmap are maintained in GitHub Projects. Tasks are grouped by feature area: architecture, content delivery, UI, persistence, testing, and CI.
+
+[View project board](https://github.com/users/LisDeNorn/projects/2/views/3?layout=table)
